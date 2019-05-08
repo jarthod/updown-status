@@ -40,7 +40,7 @@ class MaintenanceUpdate < ActiveRecord::Base
 
   def send_notifications_on_create
     if self.notify?
-      Thread.new { self.send_notifications }
+      self.send_notifications
     end
   end
 

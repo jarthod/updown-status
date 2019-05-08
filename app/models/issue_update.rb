@@ -59,7 +59,7 @@ class IssueUpdate < ActiveRecord::Base
 
   def send_notifications_on_create
     if self.notify?
-      delay.send_notifications
+      self.send_notifications
     end
   end
 
