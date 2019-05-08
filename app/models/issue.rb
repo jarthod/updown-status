@@ -88,7 +88,7 @@ class Issue < ActiveRecord::Base
 
   def send_notifications_on_create
     if self.notify?
-      self.delay.send_notifications
+      Thread.new { self.send_notifications }
     end
   end
 
