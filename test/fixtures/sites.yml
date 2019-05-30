@@ -1,0 +1,13 @@
+updown:
+  id: 1
+  title: updown.io status
+  description: Simple and Inexpensive website monitoring
+  domain: status.updown.io
+  support_email: support@updown.io
+  website_url: https://updown.io
+  time_zone: Paris
+  crawling_permitted: true
+  allow_subscriptions: true
+  http_protocol: https
+  privacy_policy_url: https://updown.io/privacy_policy
+

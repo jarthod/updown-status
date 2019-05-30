@@ -74,4 +74,7 @@ Rails.application.routes.draw do
   get 'verify/:token' => 'pages#subscriber_verification'
   root 'pages#index'
 
+  # updown
+  get 'ping' => 'updown#ping'
+  post 'sidekiq' => 'updown#sidekiq'
 end

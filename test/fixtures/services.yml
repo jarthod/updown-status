@@ -1,0 +1,86 @@
+web:
+  id: 1
+  name: Web Application
+  permalink: web
+  position: 1
+  status_id: 1
+  group_id: 1
+api:
+  id: 2
+  name: API
+  permalink: api
+  position: 2
+  status_id: 1
+  group_id: 1
+custom_status_pages:
+  id: 3
+  name: Custom status pages
+  permalink: custom-status-pages
+  position: 3
+  status_id: 1
+  description: 'Status pages hosted under a custom domain name, ex: status.mycompany.com'
+  group_id: 1
+email_notifications:
+  id: 4
+  name: Email
+  permalink: email-notifications
+  position: 4
+  status_id: 1
+  group_id: 3
+daemon_lan:
+  id: 5
+  name: Los Angeles, US
+  permalink: daemon-lan
+  position: 5
+  status_id: 1
+  group_id: 2
+daemon_mia:
+  id: 6
+  name: Miami, US
+  permalink: daemon-mia
+  position: 6
+  status_id: 1
+  group_id: 2
+daemon_bhs:
+  id: 7
+  name: Montreal, Canada
+  permalink: daemon-bhs
+  position: 7
+  status_id: 1
+  group_id: 2
+daemon_rbx:
+  id: 8
+  name: Roubaix, France
+  permalink: daemon-rbx
+  position: 8
+  status_id: 1
+  group_id: 2
+daemon_fra:
+  id: 9
+  name: Frankfurt, Germany
+  permalink: daemon-fra
+  position: 9
+  status_id: 1
+  group_id: 2
+daemon_sin:
+  id: 10
+  name: Singapore
+  permalink: daemon-sin
+  position: 10
+  status_id: 1
+  group_id: 2
+daemon_tok:
+  id: 11
+  name: Tokyo, Japan
+  permalink: daemon-tok
+  position: 11
+  status_id: 1
+  group_id: 2
+daemon_syd:
+  id: 12
+  name: Sydney, Australia
+  permalink: daemon-syd
+  position: 12
+  status_id: 1
+  group_id: 2
+

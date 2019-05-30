@@ -1,0 +1,30 @@
+operational:
+  id: 1
+  name: Operational
+  permalink: operational
+  color: 2FCC66
+  status_type: ok
+degraded_performance:
+  id: 2
+  name: Degraded Performance
+  permalink: degraded-performance
+  color: F1C40F
+  status_type: minor
+partial_outage:
+  id: 3
+  name: Partial Outage
+  permalink: partial-outage
+  color: E67E22
+  status_type: minor
+major_outage:
+  id: 4
+  name: Major Outage
+  permalink: major-outage
+  color: E74C3C
+  status_type: major
+maintenance:
+  id: 5
+  name: Maintenance
+  permalink: maintenance
+  color: AAAAAA
+  status_type: maintenance

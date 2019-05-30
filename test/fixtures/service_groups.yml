@@ -1,0 +1,9 @@
+web:
+  id: 1
+  name: Web
+monitoring:
+  id: 2
+  name: Monitoring
+notifications:
+  id: 3
+  name: Notifications
