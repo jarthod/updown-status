@@ -1,6 +1,7 @@
 ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
 require 'rails/test_help'
+require 'webmock/minitest'
 
 HOSTNAME = 'localhost-test'
 Updown::DAEMONS['127.0.0.1'] = HOSTNAME

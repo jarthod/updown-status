@@ -1,3 +1,6 @@
+require 'net/http'
+require 'json'
+
 module Updown
   DAEMONS = {
     '45.32.74.41' => 'lan',
@@ -64,6 +67,28 @@ module Updown
       @@status['global'] = :down
     end
     update_services
+  rescue => e
+    Rails.logger.warn "[updown] Check status fail: #{e}"
+  end
+
+  def self.check_postmark
+    response = Net::HTTP.get(URI("https://status.postmarkapp.com/api/1.0/services"))
+    status = JSON.parse(response).find {|s| s['name'].include?("SMTP") }&.dig('status')
+    service = Service.find_by(permalink: 'email-notifications')
+    target = case status
+      when "DELAY" then 2 # degraded-performance
+      when "DEGRADED" then 3 # partial-outage
+      when "DOWN" then 4 # major-outage
+      when "MAINTENANCE" then 5 # maintenance
+      when "UP" then 1 # operational
+      else 1
+    end
+    Rails.logger.info "[updown] Postmark check: #{status}. Service status: #{service.status_id} → #{target}"
+    if target != service.status_id and service.active_maintenances.none?
+      service.update_attribute(:status_id, target)
+    end
+  rescue => e
+    Rails.logger.warn "[updown] Postmark check fail: #{e}"
   end
 
   def self.ping name
@@ -106,6 +131,7 @@ module Updown
           1 # operational
         end
         if target != service.status_id and service.active_maintenances.none?
+          Rails.logger.info "[updown] Updating service #{service.permalink}: #{service.status_id} → #{target}"
           service.update_attribute(:status_id, target)
         end
       end
@@ -120,6 +146,7 @@ module Updown
     while true
       sleep REFRESH_RATE
       Updown.check_status
+      Updown.check_postmark
     end
   end
 

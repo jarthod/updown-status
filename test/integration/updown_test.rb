@@ -205,4 +205,45 @@ class UpdownTest < ActionDispatch::IntegrationTest
     end
   end
 
+  class CheckPostmarkTest < self
+    test "does nothing if all is good" do
+      srv = services(:email_notifications)
+      stub_request(:get, "https://status.postmarkapp.com/api/1.0/services").to_return(body: '[{"name":"API","status":"UP","url":"/services/api"},{"name":"Outbound SMTP","status":"UP","url":"/services/smtp"},{"name":"Web App","status":"UP","url":"/services/web"},{"name":"Inbound SMTP","status":"UP","url":"/services/inbound"}]')
+      assert_no_changes -> { srv.reload.status.permalink }, from: 'operational' do
+        Updown.check_postmark
+      end
+    end
+
+    test "updates service status if postmark is down" do
+      srv = services(:email_notifications)
+      stub_request(:get, "https://status.postmarkapp.com/api/1.0/services").to_return(body: '[{"name":"Outbound SMTP","status":"DOWN"}]')
+      assert_changes -> { srv.reload.status.permalink }, from: 'operational', to: 'major-outage' do
+        Updown.check_postmark
+      end
+    end
+
+    test "updates service status if postmark is degraded" do
+      srv = services(:email_notifications)
+      stub_request(:get, "https://status.postmarkapp.com/api/1.0/services").to_return(body: '[{"name":"Outbound SMTP","status":"DEGRADED"}]')
+      assert_changes -> { srv.reload.status.permalink }, from: 'operational', to: 'partial-outage' do
+        Updown.check_postmark
+      end
+    end
+
+    test "updates service status if postmark is delayed" do
+      srv = services(:email_notifications)
+      stub_request(:get, "https://status.postmarkapp.com/api/1.0/services").to_return(body: '[{"name":"Outbound SMTP","status":"DELAY"}]')
+      assert_changes -> { srv.reload.status.permalink }, from: 'operational', to: 'degraded-performance' do
+        Updown.check_postmark
+      end
+    end
+
+    test "updates service status if postmark is in maintenance" do
+      srv = services(:email_notifications)
+      stub_request(:get, "https://status.postmarkapp.com/api/1.0/services").to_return(body: '[{"name":"Outbound SMTP","status":"MAINTENANCE"}]')
+      assert_changes -> { srv.reload.status.permalink }, from: 'operational', to: 'maintenance' do
+        Updown.check_postmark
+      end
+    end
+  end
 end
