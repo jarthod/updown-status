@@ -1,24 +1,6 @@
-require 'test_helper'
+require_relative "../test_helper"
 
 class UpdownTest < ActionDispatch::IntegrationTest
-  setup do
-    Updown.reset_storage!
-    Mail::TestMailer.deliveries.clear
-  end
-
-  class HomepageTest < self
-    test "homepage returns a list of servers with status" do
-      get '/'
-      assert_response :success
-      Updown::DAEMONS.each do |ip, name|
-        next if name == HOSTNAME
-        s = Service.find_by(permalink: "daemon-#{name}")
-        assert_select 'p.serviceList__name', s.name
-      end
-      assert_select 'span.serviceStatusTag', 'Operational'
-    end
-  end
-
   class PingEndpointTest < self
     test "returns 403 if IP is not allowed" do
       get '/ping', headers: {'X-Forwarded-For' => '3.3.3.3'}

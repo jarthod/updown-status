@@ -2,4 +2,6 @@ adrien:
   id: 1
   email_address: adrien@updown.io
   name: Adrien Rey-Jarthon
+  password_digest: <%= BCrypt::Password.create('password', cost: 5) %>
+
 

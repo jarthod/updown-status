@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 ruby '2.6.4'
 
 gem 'rails', '~> 5.2'
+gem 'listen'
 gem 'pg'
 gem 'sass-rails'
 gem 'uglifier'
@@ -33,4 +34,5 @@ gem 'log_logins'
 group :development, :test do
   gem 'annotate'
   gem 'webmock'
+  gem 'capybara'
 end
