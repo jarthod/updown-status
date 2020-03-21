@@ -1,8 +1,5 @@
 class PagesController < ApplicationController
 
-  before_action { prepend_view_path(File.join(Staytus::Config.theme_root, 'views')) }
-  layout Staytus::Config.theme_name
-
   def index
     @services = Service.ordered.includes(:group, :status, {:active_maintenances => :service_status})
     @services_with_group = @services.group_by(&:group).sort_by { |g,_| g ? g.name : 'zzz' }

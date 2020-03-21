@@ -21,3 +21,8 @@ dropdb staytus_dev
 heroku pg:pull DATABASE staytus_dev
 ```
 
+Fake monitoring requests:
+```
+curl -iH 'X-Forwarded-For: 91.121.222.175' localhost:8787/ping
+curl -iH 'X-Forwarded-For: 91.121.222.175' -d 'queues[default]=5000&queues[mailers]=0&env=production' localhost:8787/sidekiq
+```

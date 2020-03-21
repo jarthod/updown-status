@@ -84,15 +84,6 @@ To log in for the first time, visit the `/admin`, and log in with email
 `admin@example.com` and password `password`. You will probably want to go to
 Settings -> Users and set up your admins.
 
-## Themes
-
-All themes are stored in the `content/themes` directory. You can
-add your own themes in this directory but we do not recommend
-making changes to the `default` theme as these changes may get
-overridden in an upgrade.
-
-Full details about how to make these will be coming soon.
-
 ## Examples in the wild
 
 * [aTech Status Site](https://status.atechmedia.com)

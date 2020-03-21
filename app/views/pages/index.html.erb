@@ -25,7 +25,7 @@
     <a href='/issue/<%= issue.identifier %>' class='issueBanner issueBanner--<%= issue.state %>'>
       <p class='issueBanner__state'><%= issue.state.humanize %></p>
       <h2><%= issue.title %></h2>
-      <p class='issueBanner__time'><%= t("themes.default.last_updated", :default => 'last updated') %> <%= time_tag issue.updated_at %></p>
+      <p class='issueBanner__time'>Last updated <%= time_tag issue.updated_at %></p>
     </a>
     <% end %>
   </section>
@@ -35,12 +35,12 @@
   <section class='ongoingIssues'>
     <% @maintenances.each do |maintenance| %>
     <a href='/maintenance/<%= maintenance.identifier %>' class='issueBanner issueBanner--maintenance'>
-      <p class='issueBanner__state'><%= t("themes.default.maintenance", :default => 'Maintenance') %></p>
+      <p class='issueBanner__state'>Maintenance</p>
       <h2><%= maintenance.title %></h2>
       <% if maintenance.started? %>
-      <p class='issueBanner__time'><%= t("themes.default.due_to_finish", :default => 'due to finish') %> <%= distance_of_time_in_words_to_now_with_direction maintenance.finish_at %></p>
+      <p class='issueBanner__time'>Due to finish <%= distance_of_time_in_words_to_now_with_direction maintenance.finish_at %></p>
       <% else %>
-      <p class='issueBanner__time'><%= t("themes.default.due_to_start", :default => 'due to start') %> <%= distance_of_time_in_words_to_now_with_direction maintenance.start_at %></p>
+      <p class='issueBanner__time'>Due to start <%= distance_of_time_in_words_to_now_with_direction maintenance.start_at %></p>
       <% end %>
 
     </a>
