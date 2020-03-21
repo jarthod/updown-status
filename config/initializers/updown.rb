@@ -130,7 +130,7 @@ module Updown
         else
           1 # operational
         end
-        if target != service.status_id and service.active_maintenances.none?
+        if target != service.status_id and service.active_maintenances.none? and service.issues.ongoing.none?
           Rails.logger.info "[updown] Updating service #{service.permalink}: #{service.status_id} → #{target}"
           service.update_attribute(:status_id, target)
         end

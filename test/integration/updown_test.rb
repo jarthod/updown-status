@@ -185,6 +185,15 @@ class UpdownTest < ActionDispatch::IntegrationTest
         Updown.check_status
       end
     end
+
+    test "do not update status for service with ongoing issue" do
+      srv = services(:daemon_syd)
+      Issue.create!(services: [srv], title: "ongoing issue", state: 'identified', service_status_id: 3, user: users(:adrien))
+      assert_no_changes -> { srv.reload.status.permalink }, from: 'partial-outage' do
+        Updown::DAEMONS.each { |ip, hostname| Updown.last_checks[hostname].unshift Time.now - 305 }
+        Updown.check_status
+      end
+    end
   end
 
   class CheckPostmarkTest < self
