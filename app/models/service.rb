@@ -44,4 +44,7 @@ class Service < ActiveRecord::Base
     Service.create!(name: "Customer Support")
   end
 
+  def no_manual_status?
+    active_maintenances.none? and issues.ongoing.none?
+  end
 end

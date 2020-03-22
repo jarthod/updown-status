@@ -30,6 +30,7 @@ gem 'redcarpet'
 gem 'premailer'
 gem 'rack-custom-proxies'
 gem 'log_logins'
+gem 'http'
 
 group :development, :test do
   gem 'annotate'

@@ -84,11 +84,47 @@ module Updown
       else 1
     end
     Rails.logger.info "[updown] Postmark check: #{status}. Service status: #{service.status_id} → #{target}"
-    if target != service.status_id and service.active_maintenances.none?
+    if target != service.status_id and service.no_manual_status?
       service.update_attribute(:status_id, target)
     end
   rescue => e
     Rails.logger.warn "[updown] Postmark check fail: #{e}"
+  end
+
+  def self.check_web_url service, url, timeout: 10, ok_time: 500 # ms
+    response = nil
+    timing = Benchmark.ms do
+      begin
+        response = HTTP.timeout(timeout).head(url).code
+      rescue HTTP::Error => e
+        response = e
+      end
+    end
+    target = case response
+      when 200 then (timing < ok_time ? 1 : 2) # operational or degraded-performance
+      when 503 then 5 # maintenance
+      else 4 # major-outage
+    end
+    Rails.logger.info "[updown] Web check (#{url}): #{response} (#{timing.round(1)} ms) Service status: #{service.status_id} → #{target}"
+    if target != service.status_id and service.no_manual_status?
+      service.update_attribute(:status_id, target)
+    end
+  end
+
+  WEB_ENDPOINTS = [
+    ["web", "https://updown.io", 500],
+    ["api", "https://updown.io/api/checks/ngg8?api-key=ro-ilx4voqgu8l8bxqu0tld", 500],
+    ["custom-status-pages", "https://meta.updown.io", 2000],
+  ].freeze
+
+  def self.check_web_urls
+    Service.find_by(permalink: 'email-notifications')
+    WEB_ENDPOINTS.each do |srv, url, ok_time|
+      service = Service.find_by(permalink: srv)
+      check_web_url service, url, ok_time: ok_time
+    end
+  rescue => e
+    Rails.logger.warn "[updown] Web check fail: #{e}"
   end
 
   def self.ping name
@@ -130,7 +166,7 @@ module Updown
         else
           1 # operational
         end
-        if target != service.status_id and service.active_maintenances.none? and service.issues.ongoing.none?
+        if target != service.status_id and service.no_manual_status?
           Rails.logger.info "[updown] Updating service #{service.permalink}: #{service.status_id} → #{target}"
           service.update_attribute(:status_id, target)
         end
@@ -147,6 +183,7 @@ module Updown
       sleep REFRESH_RATE
       Updown.check_status
       Updown.check_postmark
+      Updown.check_web_urls
     end
   end
 

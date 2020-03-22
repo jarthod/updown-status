@@ -238,4 +238,50 @@ class UpdownTest < ActionDispatch::IntegrationTest
       end
     end
   end
+
+  class CheckWebUrlsTest < self
+    test "does nothing if all is good" do
+      services = [services(:web), services(:api), services(:custom_status_pages)]
+      stub_request(:head, "https://updown.io")
+      stub_request(:head, "https://updown.io/api/checks/ngg8?api-key=ro-ilx4voqgu8l8bxqu0tld")
+      stub_request(:head, "https://meta.updown.io")
+      assert_no_changes -> {
+        services.map {|srv| srv.reload.status.permalink }
+      }, from: ['operational', 'operational', 'operational'] do
+        Updown.check_web_urls
+      end
+    end
+
+    test "updates service to major outage if 500" do
+      srv = services(:web)
+      stub_request(:head, "https://updown.io").to_return(status: 500)
+      assert_changes -> { srv.reload.status.permalink }, from: 'operational', to: 'major-outage' do
+        Updown.check_web_url srv, "https://updown.io"
+      end
+    end
+
+    test "updates service to maintenance if 503" do
+      srv = services(:web)
+      stub_request(:head, "https://updown.io").to_return(status: 503)
+      assert_changes -> { srv.reload.status.permalink }, from: 'operational', to: 'maintenance' do
+        Updown.check_web_url srv, "https://updown.io"
+      end
+    end
+
+    test "updates service to degraded-performance if slow" do
+      srv = services(:web)
+      stub_request(:head, "https://updown.io").to_return(status: 200)
+      assert_changes -> { srv.reload.status.permalink }, from: 'operational', to: 'degraded-performance' do
+        Updown.check_web_url srv, "https://updown.io", ok_time: 0
+      end
+    end
+
+    test "updates service to major outage if timeout" do
+      srv = services(:web)
+      stub_request(:head, "https://updown.io").to_timeout
+      assert_changes -> { srv.reload.status.permalink }, from: 'operational', to: 'major-outage' do
+        Updown.check_web_url srv, "https://updown.io"
+      end
+    end
+  end
 end
