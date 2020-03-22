@@ -89,6 +89,7 @@ class UpdownTest < ActionDispatch::IntegrationTest
       post '/sidekiq', params: payload(queues: {default: 5000, mailers: 0})
       assert_equal :down, Updown.sidekiq_status[HOSTNAME]
       assert_equal 1, Mail::TestMailer.deliveries.length
+      assert_includes Mail::TestMailer.deliveries.first.body.encoded, 'localhost-test sidekiq queue too big: {"default":"5000","mailers":"0"}'
     end
 
     test "marks daemon as down if low queue is high" do

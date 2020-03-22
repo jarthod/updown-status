@@ -114,7 +114,7 @@ module Updown
       notify "SIDEKIQ RECOVERY on #{name}", "#{name} sidekiq is working again"
     elsif !healthy && @@sidekiq_status[name] == :up
       @@sidekiq_status[name] = :down
-      notify "SIDEKIQ ALERT on #{name}", "#{name} sidekiq queue too big: #{params[:queues].inspect}"
+      notify "SIDEKIQ ALERT on #{name}", "#{name} sidekiq queue too big: #{params[:queues].to_json}"
     end
     update_services
   end
