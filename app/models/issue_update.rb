@@ -48,7 +48,7 @@ class IssueUpdate < ActiveRecord::Base
     if self.service_status
       self.issue.service_status = self.service_status
     end
-    self.issue.save!
+    self.issue.save! if self.issue.changed?
   end
 
   def send_notifications

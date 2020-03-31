@@ -21,6 +21,7 @@ class Admin::MaintenancesController < Admin::BaseController
 
   def create
     @maintenance = Maintenance.new(safe_params)
+    @maintenance.user = current_user
     if @maintenance.save
       redirect_to admin_maintenances_path, :notice => "Maintenance session has been added successfully."
     else

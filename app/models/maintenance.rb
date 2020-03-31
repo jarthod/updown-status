@@ -134,7 +134,7 @@ class Maintenance < ActiveRecord::Base
   end
 
   def create_or_update_history_item
-    if self.start_at_changed?
+    if self.saved_change_to_start_at?
       item = HistoryItem.where(:item => self).first_or_initialize
       item.date = self.start_at
       item.save
