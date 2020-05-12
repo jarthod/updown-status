@@ -112,7 +112,7 @@ module Updown
   end
 
   WEB_ENDPOINTS = [
-    ["web", "https://updown.io", 1000],
+    ["web", "https://updown.io/users/sign_in", 1000],
     ["api", "https://updown.io/api/checks/ngg8?api-key=ro-ilx4voqgu8l8bxqu0tld", 1000],
     ["custom-status-pages", "https://meta.updown.io", 2000],
   ].freeze

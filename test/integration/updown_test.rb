@@ -242,7 +242,7 @@ class UpdownTest < ActionDispatch::IntegrationTest
   class CheckWebUrlsTest < self
     test "does nothing if all is good" do
       services = [services(:web), services(:api), services(:custom_status_pages)]
-      stub_request(:head, "https://updown.io")
+      stub_request(:head, "https://updown.io/users/sign_in")
       stub_request(:head, "https://updown.io/api/checks/ngg8?api-key=ro-ilx4voqgu8l8bxqu0tld")
       stub_request(:head, "https://meta.updown.io")
       assert_no_changes -> {
