@@ -73,7 +73,7 @@ module Updown
 
   def self.check_postmark
     response = Net::HTTP.get(URI("https://status.postmarkapp.com/api/1.0/services"))
-    status = JSON.parse(response).find {|s| s['name'].include?("SMTP") }&.dig('status')
+    status = JSON.parse(response).find {|s| s['name'].include?("API") }&.dig('status')
     service = Service.find_by(permalink: 'email-notifications')
     target = case status
       when "DELAY" then 2 # degraded-performance
