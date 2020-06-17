@@ -37,6 +37,15 @@ class ServiceStatus < ActiveRecord::Base
     string :status_type
   end
 
+  def as_json opts = {}
+    {
+      name: name,
+      permalink: permalink,
+      color: color,
+      status_type: status_type
+    }
+  end
+
   def self.create_defaults
     ServiceStatus.create!(:name => 'Operational', :status_type => 'ok', :color => '2FCC66')
     ServiceStatus.create!(:name => 'Degraded Performance', :status_type => 'minor', :color => 'F1C40F')

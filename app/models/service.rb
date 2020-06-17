@@ -37,11 +37,25 @@ class Service < ActiveRecord::Base
 
   scope :ordered, -> { order(position: :asc) }
 
+  def as_json opts = {}
+    {
+      name: name,
+      permalink: permalink,
+      description: description.presence,
+      group: group&.name,
+      status: current_status.permalink,
+    }.compact
+  end
+
   def self.create_defaults
     Service.create!(name: "Web Application")
     Service.create!(name: "API")
     Service.create!(name: "Public Website")
     Service.create!(name: "Customer Support")
+  end
+
+  def current_status
+    active_maintenances.first&.service_status || status
   end
 
   def no_manual_status?

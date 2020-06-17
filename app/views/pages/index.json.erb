@@ -1,0 +1,10 @@
+<%= raw JSON.pretty_generate({
+  site: {
+    title: site.title,
+    description: site.description
+  },
+  ongoing_issues: @issues.as_json,
+  planned_maintenances: @maintenances.as_json,
+  services: @services.as_json,
+  services_statuses: ServiceStatus.all.as_json
+}) %>

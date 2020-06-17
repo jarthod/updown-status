@@ -55,6 +55,16 @@ class Issue < ActiveRecord::Base
     relationship :user
   end
 
+  def as_json opts = {}
+    {
+      identifier: identifier,
+      title: title,
+      state: state,
+      updated_at: updated_at&.utc&.iso8601,
+      created_at: created_at&.utc&.iso8601,
+    }
+  end
+
   def add_initial_update
     if self.initial_update.blank? && self.updates.empty?
       initial_text = INITIAL_UPDATE_TEXT

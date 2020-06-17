@@ -60,6 +60,19 @@ class Maintenance < ActiveRecord::Base
     relationship :user
   end
 
+  def as_json opts = {}
+    {
+      identifier: identifier,
+      title: title,
+      description: description,
+      status: status,
+      start_at: start_at&.utc&.iso8601,
+      finish_at: finish_at&.utc&.iso8601,
+      updated_at: updated_at&.utc&.iso8601,
+      created_at: created_at&.utc&.iso8601,
+    }
+  end
+
   def status
     return :closed if self.closed?
     self.start_at > Time.now ? :upcoming : :active
