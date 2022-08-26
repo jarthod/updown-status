@@ -8,6 +8,8 @@ require 'capybara/minitest'
 HOSTNAME = 'localhost-test'
 Updown::DAEMONS['127.0.0.1'] = HOSTNAME
 Updown::WORKERS['127.0.0.1'] = HOSTNAME
+Updown::DAEMONS['::1'] = HOSTNAME
+Updown::WORKERS['::1'] = HOSTNAME
 Mail.defaults { delivery_method :test }
 
 class ActiveSupport::TestCase

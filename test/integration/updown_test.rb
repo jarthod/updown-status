@@ -14,6 +14,13 @@ class UpdownTest < ActionDispatch::IntegrationTest
       assert_equal 2, Updown.last_checks[HOSTNAME].size
     end
 
+    test "also accepts IPv6" do
+      assert_equal 1, Updown.last_checks[HOSTNAME].size
+      get '/ping', headers: {'X-Forwarded-For' => '::1'}
+      assert_response :success
+      assert_equal 2, Updown.last_checks[HOSTNAME].size
+    end
+
     test "caps history at 20" do
       assert_equal 1, Updown.last_checks[HOSTNAME].size
       19.times { get '/ping' }
@@ -59,6 +66,13 @@ class UpdownTest < ActionDispatch::IntegrationTest
     test "register sidekiq check and returns 200" do
       assert_equal Updown.last_sidekiq_ping[HOSTNAME].size, 1
       post '/sidekiq', params: payload
+      assert_response :success
+      assert_equal Updown.last_sidekiq_ping[HOSTNAME].size, 2
+    end
+
+    test "also accepts IPv6" do
+      assert_equal Updown.last_sidekiq_ping[HOSTNAME].size, 1
+      post '/sidekiq', params: payload, headers: {'X-Forwarded-For' => '::1'}
       assert_response :success
       assert_equal Updown.last_sidekiq_ping[HOSTNAME].size, 2
     end
