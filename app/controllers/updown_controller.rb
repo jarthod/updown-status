@@ -2,8 +2,9 @@ class UpdownController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def ping
-    if Updown::DAEMONS.key? request.remote_ip
-      name = Updown::DAEMONS[request.remote_ip]
+    Rails.logger.warn "[updown] /ping received from #{request.ip} (X-Forwarded-For: #{request.x_forwarded_for} → #{request.forwarded_for}, Fly-Client-IP: #{request.env['HTTP_FLY_CLIENT_IP']}, remote_ip: #{request.remote_ip})"
+    if Updown::DAEMONS.key? request.ip
+      name = Updown::DAEMONS[request.ip]
       Updown.ping name
       head :ok
     else
@@ -12,9 +13,10 @@ class UpdownController < ApplicationController
   end
 
   def sidekiq
-    if Updown::WORKERS.key? request.remote_ip
+    Rails.logger.warn "[updown] /sidekiq received from #{request.ip} (X-Forwarded-For: #{request.x_forwarded_for} → #{request.forwarded_for}, Fly-Client-IP: #{request.env['HTTP_FLY_CLIENT_IP']}, remote_ip: #{request.remote_ip})"
+    if Updown::WORKERS.key? request.ip
       return head :forbidden if params[:env] != 'production'
-      name = Updown::WORKERS[request.remote_ip]
+      name = Updown::WORKERS[request.ip]
       Updown.sidekiq name, params
       head :ok
     else
