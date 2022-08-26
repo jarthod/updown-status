@@ -28,6 +28,9 @@ curl -iH 'X-Forwarded-For: 91.121.222.175' -d 'queues[default]=5000&queues[maile
 ```
 
 Deploy:
-```
-git push heroku master
+
+```sh
+fly deploy
+# or
+fly deploy --remote-only
 ```
