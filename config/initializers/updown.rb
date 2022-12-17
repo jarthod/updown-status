@@ -105,8 +105,9 @@ module Updown
     response = nil
     timing = Benchmark.ms do
       begin
-        response = HTTP.timeout(timeout).head(url).code
-      rescue HTTP::Error => e
+        uri = URI(url)
+        response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https', open_timeout: timeout, read_timeout: timeout) { |http| http.head(uri).code.to_i }
+      rescue => e
         response = e
       end
     end
