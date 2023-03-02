@@ -214,31 +214,23 @@ class UpdownTest < ActionDispatch::IntegrationTest
   class CheckPostmarkTest < self
     test "does nothing if all is good" do
       srv = services(:email_notifications)
-      stub_request(:get, "https://status.postmarkapp.com/api/1.0/services").to_return(body: '[{"name":"API","status":"UP","url":"/services/api"},{"name":"Outbound SMTP","status":"UP","url":"/services/smtp"},{"name":"Web App","status":"UP","url":"/services/web"},{"name":"Inbound SMTP","status":"UP","url":"/services/inbound"}]')
+      stub_request(:get, "https://status.postmarkapp.com/api/v1/components").to_return(body: '{"components":[{"id":46327,"name":"API","description":null,"state":"operational","parent_id":null,"position":1,"created_at":"2022-12-17T17:54:22.245Z","updated_at":"2023-02-18T01:21:20.546Z"},{"id":46328,"name":"SMTP (sending)","description":null,"state":"operational","parent_id":null,"position":2,"created_at":"2022-12-17T17:54:34.094Z","updated_at":"2023-02-18T01:21:20.546Z"},{"id":46329,"name":"SMTP (receiving)","description":null,"state":"operational","parent_id":null,"position":3,"created_at":"2022-12-17T17:54:51.401Z","updated_at":"2023-02-18T01:21:20.546Z"},{"id":46330,"name":"Web App","description":null,"state":"operational","parent_id":null,"position":4,"created_at":"2022-12-17T17:55:00.197Z","updated_at":"2023-02-18T01:21:20.546Z"}],"meta":{"count":4,"total_count":4}}')
       assert_no_changes -> { srv.reload.status.permalink }, from: 'operational' do
         Updown.check_postmark
       end
     end
 
-    test "updates service status if postmark is down" do
+    test "updates service status if postmark API is degraded" do
       srv = services(:email_notifications)
-      stub_request(:get, "https://status.postmarkapp.com/api/1.0/services").to_return(body: '[{"name":"API","status":"DOWN"}]')
-      assert_changes -> { srv.reload.status.permalink }, from: 'operational', to: 'major-outage' do
-        Updown.check_postmark
-      end
-    end
-
-    test "updates service status if postmark is degraded" do
-      srv = services(:email_notifications)
-      stub_request(:get, "https://status.postmarkapp.com/api/1.0/services").to_return(body: '[{"name":"API","status":"DEGRADED"}]')
+      stub_request(:get, "https://status.postmarkapp.com/api/v1/components").to_return(body: '{"components":[{"id":46327,"name":"API","state":"degraded"},{"id":46328,"name":"SMTP (sending)","state":"under_maintenance"}]}')
       assert_changes -> { srv.reload.status.permalink }, from: 'operational', to: 'partial-outage' do
         Updown.check_postmark
       end
     end
 
-    test "updates service status if postmark is delayed" do
+    test "updates service status if postmark SMTP is degraded" do
       srv = services(:email_notifications)
-      stub_request(:get, "https://status.postmarkapp.com/api/1.0/services").to_return(body: '[{"name":"API","status":"DELAY"}]')
+      stub_request(:get, "https://status.postmarkapp.com/api/v1/components").to_return(body: '{"components":[{"id":46327,"name":"API","state":"operational"},{"id":46328,"name":"SMTP (sending)","state":"degraded"}]}')
       assert_changes -> { srv.reload.status.permalink }, from: 'operational', to: 'degraded-performance' do
         Updown.check_postmark
       end
@@ -246,7 +238,7 @@ class UpdownTest < ActionDispatch::IntegrationTest
 
     test "updates service status if postmark is in maintenance" do
       srv = services(:email_notifications)
-      stub_request(:get, "https://status.postmarkapp.com/api/1.0/services").to_return(body: '[{"name":"API","status":"MAINTENANCE"}]')
+      stub_request(:get, "https://status.postmarkapp.com/api/v1/components").to_return(body: '{"components":[{"id":46327,"name":"API","state":"under_maintenance"},{"id":46328,"name":"SMTP (sending)","state":"operational"}]}')
       assert_changes -> { srv.reload.status.permalink }, from: 'operational', to: 'maintenance' do
         Updown.check_postmark
       end

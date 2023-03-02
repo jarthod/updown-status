@@ -82,16 +82,21 @@ module Updown
   end
 
   def self.check_postmark
-    response = Net::HTTP.get(URI("https://status.postmarkapp.com/api/1.0/services"))
-    status = JSON.parse(response).find {|s| s['name'].include?("API") }&.dig('status')
+    # https://status.postmarkapp.com/api
+    response = Net::HTTP.get(URI("https://status.postmarkapp.com/api/v1/components"))
+    components = JSON.parse(response).fetch('components')
+    api_state = components.find {|s| s['name'].include?("API") }&.dig('state')
+    smtp_state = components.find {|s| s['name'].include?("SMTP (sending)") }&.dig('state')
+    # can be "operational", "degraded" or "under_maintenance"
     service = Service.find_by(permalink: 'email-notifications')
-    target = case status
-      when "DELAY" then 2 # degraded-performance
-      when "DEGRADED" then 3 # partial-outage
-      when "DOWN" then 4 # major-outage
-      when "MAINTENANCE" then 5 # maintenance
-      when "UP" then 1 # operational
-      else 1
+    target = if api_state == "degraded"
+      3 # partial-outage (we can't send, may even be loosing some messages)
+    elsif smtp_state == "degraded"
+      2 # degraded-performance (no API problem but likely sending delays)
+    elsif api_state == "under_maintenance" || smtp_state == "under_maintenance"
+      5 # maintenance
+    else
+      1 # operational
     end
     Rails.logger.info "[updown] Postmark check: #{status}. Service status: #{service.status_id} → #{target}"
     if target != service.status_id and service.no_manual_status?
