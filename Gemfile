@@ -13,7 +13,7 @@ gem 'kaminari'
 gem 'chronic'
 gem 'dynamic_form'
 gem 'activevalidators'
-gem 'bcrypt'
+gem 'bcrypt', '>= 3.1.12' # 3.1.11 fails on Ubuntu with HashError
 gem 'rails_env_config'
 gem 'chronic_duration'
 gem 'datey'

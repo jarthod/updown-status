@@ -57,7 +57,7 @@ GEM
       rake (>= 10.4, < 14.0)
     arel (9.0.0)
     authie (3.1.5)
-    bcrypt (3.1.11)
+    bcrypt (3.1.18)
     builder (3.2.4)
     capybara (3.31.0)
       addressable
@@ -257,7 +257,7 @@ DEPENDENCIES
   activevalidators
   annotate
   authie
-  bcrypt
+  bcrypt (>= 3.1.12)
   capybara
   chronic
   chronic_duration
