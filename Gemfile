@@ -1,8 +1,5 @@
 source 'https://rubygems.org'
-ruby '2.6.9'
-
 gem 'rails', '~> 5.2'
-gem 'listen'
 gem 'pg'
 gem 'sass-rails'
 gem 'uglifier'
@@ -35,4 +32,5 @@ group :development, :test do
   gem 'annotate'
   gem 'webmock'
   gem 'capybara'
+  gem 'listen'
 end

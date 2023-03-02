@@ -16,19 +16,21 @@
 
 class IssueUpdate < ActiveRecord::Base
 
-  validates :state, inclusion: {in: Issue::STATES}
-  validates :text, presence: true
+  validates :state, :inclusion => {:in => Issue::STATES}
+  validates :text, :presence => true
 
-  belongs_to :issue, touch: true
+  belongs_to :issue, :touch => true
   belongs_to :user
   belongs_to :service_status, optional: true
 
-  random_string :identifier, type: :hex, length: 6, unique: true
+  delegate :subscribers, to: :issue
 
-  scope :ordered, -> { order(id: :desc) }
+  random_string :identifier, :type => :hex, :length => 6, :unique => true
+
+  scope :ordered, -> { order(:id => :desc) }
 
   after_save :update_base_issue
-  after_commit :send_notifications_on_create, on: :create
+  after_commit :send_notifications_on_create, :on => :create
 
   florrick do
     string :state
@@ -52,8 +54,8 @@ class IssueUpdate < ActiveRecord::Base
   end
 
   def send_notifications
-    for subscriber in Subscriber.verified
-      Staytus::Email.deliver(subscriber, :new_issue_update, issue: self.issue, update: self)
+    for subscriber in subscribers
+      Staytus::Email.deliver(subscriber, :new_issue_update, :issue => self.issue, :update => self)
     end
   end
 

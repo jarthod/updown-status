@@ -10,7 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180425131827) do
+ActiveRecord::Schema.define(version: 2020_11_30_164954) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
 
   create_table "api_tokens", force: :cascade do |t|
     t.string "name"
@@ -109,7 +112,7 @@ ActiveRecord::Schema.define(version: 20180425131827) do
     t.boolean "notify", default: false
   end
 
-  create_table "login_events", id: :integer, force: :cascade do |t|
+  create_table "login_events", id: :serial, force: :cascade do |t|
     t.string "user_type"
     t.integer "user_id"
     t.string "username"
@@ -119,11 +122,11 @@ ActiveRecord::Schema.define(version: 20180425131827) do
     t.string "user_agent"
     t.datetime "created_at"
     t.index ["created_at"], name: "index_login_events_on_created_at"
-    t.index ["interface"], name: "index_login_events_on_interface", length: { interface: 10 }
-    t.index ["ip", "id"], name: "index_login_events_on_ip_and_id", length: { ip: 50 }
-    t.index ["ip"], name: "index_login_events_on_ip", length: { ip: 10 }
+    t.index ["interface"], name: "index_login_events_on_interface"
+    t.index ["ip", "id"], name: "index_login_events_on_ip_and_id"
+    t.index ["ip"], name: "index_login_events_on_ip"
     t.index ["user_id", "id"], name: "index_login_events_on_user_id_and_id"
-    t.index ["user_type", "user_id"], name: "index_login_events_on_user_type_and_user_id", length: { user_type: 10 }
+    t.index ["user_type", "user_id"], name: "index_login_events_on_user_type_and_user_id"
   end
 
   create_table "maintenance_service_joins", force: :cascade do |t|
@@ -166,7 +169,7 @@ ActiveRecord::Schema.define(version: 20180425131827) do
     t.string "role"
     t.string "file_name"
     t.string "file_type"
-    t.binary "data", limit: 16777215
+    t.binary "data"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -210,6 +213,13 @@ ActiveRecord::Schema.define(version: 20180425131827) do
     t.boolean "allow_subscriptions", default: true
     t.string "http_protocol"
     t.string "privacy_policy_url"
+  end
+
+  create_table "subscriber_service_joins", force: :cascade do |t|
+    t.integer "subscriber_id"
+    t.integer "service_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "subscribers", force: :cascade do |t|

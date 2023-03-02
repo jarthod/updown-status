@@ -27,15 +27,16 @@ class Service < ActiveRecord::Base
     self.position = last_position ? last_position + 1 : 1
   }
 
-  belongs_to :status, class_name: 'ServiceStatus'
-  belongs_to :group, class_name: 'ServiceGroup', optional: true
-  has_many :issue_service_joins, dependent: :destroy
-  has_many :issues, through: :issue_service_joins
-  has_many :maintenance_service_joins, dependent: :destroy
-  has_many :maintenances, through: :maintenance_service_joins
-  has_many :active_maintenances, -> { references(:maintenances).where(closed_at: nil).where("start_at <= ?", Time.now) }, through: :maintenance_service_joins, source: :maintenance
+  belongs_to :status, :class_name => 'ServiceStatus'
+  belongs_to :group, :class_name => 'ServiceGroup', :optional => true
+  has_many :issue_service_joins, :dependent => :destroy
+  has_many :issues, :through => :issue_service_joins
+  has_many :maintenance_service_joins, :dependent => :destroy
+  has_many :maintenances, :through => :maintenance_service_joins
+  has_many :active_maintenances, -> { references(:maintenances).where(:closed_at => nil).where("start_at <= ?", Time.now) }, :through => :maintenance_service_joins, :source => :maintenance
 
-  scope :ordered, -> { order(position: :asc) }
+  scope :ordered, -> { order(:position => :asc) }
+  scope :ungrouped, -> { where(:group_id => nil) }
 
   def as_json opts = {}
     {
@@ -48,10 +49,10 @@ class Service < ActiveRecord::Base
   end
 
   def self.create_defaults
-    Service.create!(name: "Web Application")
-    Service.create!(name: "API")
-    Service.create!(name: "Public Website")
-    Service.create!(name: "Customer Support")
+    Service.create!(:name => "Web Application")
+    Service.create!(:name => "API")
+    Service.create!(:name => "Public Website")
+    Service.create!(:name => "Customer Support")
   end
 
   def current_status
