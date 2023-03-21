@@ -34,3 +34,5 @@ group :development, :test do
   gem 'capybara'
   gem 'listen'
 end
+
+gem 'sassc', '2.1.0' # force version which have static linux binary for faster install
