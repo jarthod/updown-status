@@ -154,6 +154,10 @@ class UpdownTest < ActionDispatch::IntegrationTest
   end
 
   class CheckStatusTest < self
+    def teardown
+      ENV.delete("VULTR_API_KEY")
+    end
+
     test "does nothing if all is good" do
       assert_equal 0, Mail::TestMailer.deliveries.length
       assert_equal :up, Updown.sidekiq_status[HOSTNAME]
@@ -173,6 +177,29 @@ class UpdownTest < ActionDispatch::IntegrationTest
       Updown.check_status
       assert_equal :down, Updown.status[HOSTNAME]
       assert_equal 1, Mail::TestMailer.deliveries.length
+    end
+
+    test "attempts a Vultr restart if no check in more than 1 hour" do
+      ENV["VULTR_API_KEY"] = "test"
+      stub_request(:get, "https://api.vultr.com/v2/instances").with(headers: { 'Authorization'=>'Bearer test' }).to_return(status: 200, headers: {'content-type' => 'application/json'}, body: '{"instances":[{"id":"2987e294-0b5f-47f7-b025-3cdc1062ae05","main_ip":"45.76.104.117","status":"active","power_status":"running","server_status":"ok","label":"localhost-test.updn.io","hostname":"localhost-test.updn.io"}],"meta":{"total":1,"links":{"next":"","prev":""}}}')
+      stub_request(:post, "https://api.vultr.com/v2/instances/2987e294-0b5f-47f7-b025-3cdc1062ae05/reboot").with(body: "{}", headers: {'Authorization'=>'Bearer test'}).to_return(status: [204, 'No Content'])
+      assert_equal :up, Updown.status[HOSTNAME]
+      Updown.last_checks[HOSTNAME].unshift Time.now - 3601
+      Updown.check_status
+      assert_equal :down, Updown.status[HOSTNAME]
+      assert_includes Mail::TestMailer.deliveries.first.body.encoded, "Found matching Vultr instance localhost-test.updn.io (2987e294-0b5f-47f7-b025-3cdc1062ae05), rebooting..."
+      assert_includes Mail::TestMailer.deliveries.first.body.encoded, "Reboot command response: 204 No Content"
+    end
+
+    test "skips Vultr restart if machine is not in Vultr" do
+      ENV["VULTR_API_KEY"] = "test"
+      stub_request(:get, "https://api.vultr.com/v2/instances").with(headers: { 'Authorization'=>'Bearer test' }).to_return(status: 200, headers: {'content-type' => 'application/json'}, body: '{"instances":[{"id":"2987e294-0b5f-47f7-b025-3cdc1062ae05","main_ip":"45.76.104.117","status":"active","power_status":"running","server_status":"ok","label":"tok.updn.io","hostname":"tok.updn.io"}],"meta":{"total":1,"links":{"next":"","prev":""}}}')
+      stub_request(:post, "https://api.vultr.com/v2/instances/2987e294-0b5f-47f7-b025-3cdc1062ae05/reboot").with(body: "{}", headers: {'Authorization'=>'Bearer test'}).to_return(status: [204, 'No Content'])
+      assert_equal :up, Updown.status[HOSTNAME]
+      Updown.last_checks[HOSTNAME].unshift Time.now - 3601
+      Updown.check_status
+      assert_equal :down, Updown.status[HOSTNAME]
+      assert_includes Mail::TestMailer.deliveries.first.body.encoded, "No Vultr instance found with hostname=localhost-test.updn.io"
     end
 
     test "mark global down if no check in more than 5 minutes" do

@@ -35,3 +35,4 @@ group :development, :test do
 end
 
 gem 'sassc', '2.1.0' # force version which have static linux binary for faster install
+gem 'vultr' # trigger vultr VM restarts

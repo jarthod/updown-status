@@ -4,9 +4,9 @@ It is used as a check target to make sure all daemons are issuing requests, if a
 
 It also monitors sidekiq processes with a periodic worker sending queue size.
 
-Run server and console locally:
+Run server and console locally (with mailcatcher):
 ```sh
-bin/rails s
+STAYTUS_SMTP_HOSTNAME=localhost STAYTUS_SMTP_PORT=1025 rails s
 bin/rails c
 ```
 
@@ -15,21 +15,21 @@ Run specs:
 rake
 ```
 
-Import database from heroku (production) to dev
+Deploy on Railway:
 ```sh
-dropdb staytus_dev
-heroku pg:pull DATABASE staytus_dev
+railway up
 ```
 
-Dump database from fly.io
+PG database dump
 ```sh
-fly proxy 15432:5432 --app updown-status-db
-/usr/lib/postgresql/14/bin/pg_dump postgres://updown_status:xxxxxxxx@localhost:15432/updown_status -Ft > ./updown-status.dump
-```
-
-Restore database to railway.app
-```sh
-/usr/lib/postgresql/14/bin/pg_restore -U postgres -h containers-us-west-33.railway.app -p 7540 -W -F t -d railway updown-status.dump
+# Get Railway database credentials
+railway variables | fgrep DATABASE_URL
+# Dump from production
+pg_dump postgresql://xxxx/railway -Ft > ./updown-status.dump
+# restore database dump to dev
+pg_restore --clean --no-owner -d staytus_dev updown-status.dump
+# restore database dump to railway
+pg_restore --clean --no-owner postgresql://xxxx/railway updown-status.dump
 ```
 
 Fake monitoring requests:
@@ -38,10 +38,3 @@ curl -iH 'X-Forwarded-For: 91.121.222.175' localhost:8787/ping
 curl -iH 'X-Forwarded-For: 91.121.222.175' -d 'queues[default]=5000&queues[mailers]=0&env=production' localhost:8787/sidekiq
 ```
 
-# Railway
-
-Deploy:
-
-```sh
-railway up
-```

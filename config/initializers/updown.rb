@@ -51,6 +51,30 @@ module Updown
     @@sidekiq_status = Hash.new { |h, k| h[k] = :up }
   end
 
+  def self.attempt_instance_reboot(name)
+    logger = StringIO.new
+    hostname = "#{name}.updn.io"
+    return if ENV["VULTR_API_KEY"].nil?
+    client = Vultr::Client.new(api_key: ENV["VULTR_API_KEY"])
+    instances = client.instances.list
+    instance = instances.data.find { |i| i.hostname == "#{name}.updn.io" }
+    if instance
+      logger.puts(msg = "Found matching Vultr instance #{instance.hostname} (#{instance.id}), rebooting...")
+      Rails.logger.info(msg)
+      response = client.instances.reboot(instance_id: instance.id)
+      logger.puts(msg = "Reboot command response: #{response.status} #{response.reason_phrase} #{response.body}")
+      Rails.logger.info(msg)
+    else
+      logger.puts(msg = "No Vultr instance found with hostname=#{hostname}")
+      Rails.logger.info(msg)
+    end
+    logger
+  rescue => e
+    Rails.logger.warn "[updown] Instance reboot failed: #{e.class}: #{e.message}"
+    logger.puts "Instance reboot failed: #{e.class}: #{e.message}"
+    logger
+  end
+
   def self.check_status
     last_diff = Float::INFINITY
     DAEMONS.each do |ip, name|
@@ -58,7 +82,8 @@ module Updown
         diff = Time.now - @@last_checks[name].first
         last_diff = diff if diff < last_diff
         if diff > 3600 and @@status[name] == :up
-          notify "ALERT on #{name}", "#{name} has stopped monitoring 1h ago"
+          logger = attempt_instance_reboot(name)
+          notify "ALERT on #{name}", "#{name} has stopped monitoring 1h ago\n#{logger&.string}"
           @@status[name] = :down
         end
       end
