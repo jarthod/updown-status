@@ -3,6 +3,8 @@
   %h1.pageHeader__heading.u-margin= @page_title = "Design settings"
   %p.u-intro
     From here you can customize aspects of your status page's design.
+    If you are using a using a custom theme, you may find that some of these
+    options are not supported.
 
 = form_for @site, :url => admin_settings_path do |f|
   = hidden_field_tag 'return_to', 'design'

@@ -19,15 +19,15 @@
     <div class='container'>
 
       <ul class='siteFooter__nav'>
-        <li>⭯ <a href='/history'>Issue & Maintenance History</a></li>
-        <li><a href='<%= site.website_url %>'>Our Homepage</a></li>
+        <li>⭯ <a href='/history'><%= t("themes.default.footer.history", :default => 'History') %></a></li>
+        <li><a href='<%= site.website_url %>'><%= t("themes.default.footer.homepage", :default => 'Our Homepage') %></a></li>
         <% if site.privacy_policy_url.present? %>
-        <li><a href='<%= site.privacy_policy_url %>'>Privacy Policy</a></li>
+        <li><a href='<%= site.privacy_policy_url %>'><%= t("themes.default.footer.privacy_policy", :default => 'Privacy Policy') %></a></li>
         <% end %>
-        <li><a href='mailto:<%= site.support_email %>'>Contact Us</a></li>
+        <li><a href='mailto:<%= site.support_email %>'><%= t("themes.default.footer.contact_us", :default => 'Contact Us') %></a></li>
       </ul>
       <p class='siteFooter__poweredBy'>
-        Forked from <a href='http://staytus.co'>Staytus</a>
+        <%= t("themes.default.footer.powered_by", :default => "Powered by") %> <a href='http://staytus.co'>Staytus</a>
       </p>
     </div>
   </footer>

@@ -6,7 +6,7 @@
     Tell us a bit about your new status site and your organization details.
     You can change any of this information later if you need to.
 
-= form_for @new_site, :url => 'setup/step3' do |f|
+= form_for @new_site, :url => setup_path(:step3) do |f|
   = f.error_messages
   .fieldSet.u-margin-2x
     .row

@@ -15,15 +15,15 @@
 
 class Service < ActiveRecord::Base
 
-  validates :name, presence: true
-  validates :permalink, presence: true, uniqueness: true, slug: true
-  validates :status_id, presence: true
-  validates :description, length: {maximum: 1000}
+  validates :name, :presence => true
+  validates :permalink, :presence => true, :uniqueness => true, :slug => true
+  validates :status_id, :presence => true
+  validates :description, :length => {:maximum => 1000}
 
   default_value :permalink, -> { self.name.parameterize }
   default_value :status_id, -> { ServiceStatus.default.try(:id) }
   default_value :position, -> {
-    last_position = self.class.order(position: :desc).pluck(:position).first
+    last_position = self.class.order(:position => :desc).pluck(:position).first
     self.position = last_position ? last_position + 1 : 1
   }
 

@@ -48,7 +48,7 @@ Rails.application.routes.draw do
     #
     # Misc. Admin Routes
     #
-    get 'helpers/chronic' => 'helpers#chronic'
+    get 'helpers/:action', :controller => 'helpers'
 
     #
     # Admin Root
@@ -59,9 +59,7 @@ Rails.application.routes.draw do
   #
   # Setup Wizard
   #
-  match 'setup/step1' => 'setup/step1', via: [:get]
-  match 'setup/step2' => 'setup/step2', via: [:get, :post]
-  match 'setup/step3' => 'setup/step3', via: [:get, :post]
+  match 'setup/:action', :controller => 'setup', :as => 'setup', :via => [:get, :post]
 
   #
   # Public Site Paths

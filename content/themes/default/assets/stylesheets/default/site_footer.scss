@@ -5,7 +5,7 @@
   border-top:1px solid #efefef;
   padding:30px 0 80px 0;
   overflow: hidden;
-  font-size:14px;
+  font-size:13px;
   margin-top:50px;
 }
 
@@ -17,13 +17,11 @@
   float:left;
   li {
     display:inline;
-    margin-right:15px;
+    margin-right:25px;
     a {
       color:#999;
     }
     &:last-child { margin-right:0;}
-    &:first-child { color: #399dd1; }
-    &:first-child a { color: #399dd1; }
   }
 }
 

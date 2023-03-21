@@ -1,0 +1,37 @@
+//= require reset
+//= require_tree ./default
+@import 'default/variables';
+body {
+  font-family: $sansSerifFont;
+  font-size:16px;
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+}
+.container { max-width:700px; margin:0 auto; }
+
+@media (max-width: 750px) {
+  .container { padding:0 25px; }
+}
+
+// updown custom
+
+body, .subscribePage__input {
+  font-family: -apple-system,BlinkMacSystemFont,"Source Sans Pro",Segoe UI,"Roboto", "Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans",Helvetica Neue,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol;
+}
+.issueDetail__title, .history__heading, .siteHeader__title, .subscribePage__heading, .subscriberVerification__title {
+  letter-spacing: 0;
+}
+.issueDetail__date, .issueDetail__services, .history__itemDate, .siteFooter, .subscribePage__subInfo, .subscribePage__input {
+  font-size: 14px
+}
+.history__itemType span {
+  border-radius: 3px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2) !important;
+  &.history__itemType__issue { background:#f70; }
+  &.history__itemType__maintenance { background:#fb0; }
+}
+.siteFooter__nav li {
+  margin-right: 15px;
+  &:first-child { color: #399dd1; }
+  &:first-child a { color: #399dd1; }
+}
