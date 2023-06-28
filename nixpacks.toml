@@ -11,9 +11,10 @@ RUBY_CONFIGURE_OPTS="--with-jemalloc --disable-install-rdoc"
 [phases.setup]
 aptPkgs = ["...", "libjemalloc-dev"]
 # Below is an attempt to cache ruby and gems (worked for ruby) https://github.com/railwayapp/nixpacks/pull/817
-cmds = ["cp -r /cache/.rbenv /root", "curl -fsSL https://github.com/rbenv/rbenv-installer/raw/HEAD/bin/rbenv-installer | bash -s stable && printf '\\neval \"$(rbenv init -)\"' >> /root/.profile && . /root/.profile && rbenv install -s 2.6.9 && rbenv global 2.6.9 && gem install bundler:2.3.21 --no-document --conservative", "cp -r /root/.rbenv /cache"]
-cacheDirectories = ["/cache/.rbenv"]
-
-# [phases.build]
+# cmds = ["cp -r /cache/.rbenv /root", "curl -fsSL https://github.com/rbenv/rbenv-installer/raw/HEAD/bin/rbenv-installer | bash -s stable && printf '\\neval \"$(rbenv init -)\"' >> /root/.profile && . /root/.profile && rbenv install -s 2.6.9 && rbenv global 2.6.9 && gem install bundler:2.3.21 --no-document --conservative", "cp -r /root/.rbenv /cache"]
 # cacheDirectories = ["/cache/.rbenv"]
-# cmds = ["cp -r /cache/.rbenv /root", "...", "cp -r /root/.rbenv /cache"]
+
+[phases.build]
+# cacheDirectories = ["/cache/.rbenv"]
+# Supposed to be automatic but it stopped working...
+cmds = ["bundle exec rails assets:precompile"]
