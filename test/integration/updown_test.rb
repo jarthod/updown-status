@@ -54,8 +54,8 @@ class UpdownTest < ActionDispatch::IntegrationTest
   end
 
   class SidekiqEndpointTest < self
-    def payload queues: {default: 0, mailers: 0}
-      {env: 'production', queues: queues}
+    def payload queues: {default: 0, mailers: 0}, disabled_locations: []
+      {env: 'production', queues: queues, disabled_locations: disabled_locations}
     end
 
     test "returns 403 if IP is not allowed" do
@@ -68,11 +68,12 @@ class UpdownTest < ActionDispatch::IntegrationTest
       post '/sidekiq', params: payload
       assert_response :success
       assert_equal Updown.last_sidekiq_ping[HOSTNAME].size, 2
+      assert_equal [], Updown.disabled_locations
     end
 
     test "also accepts IPv6" do
       assert_equal Updown.last_sidekiq_ping[HOSTNAME].size, 1
-      post '/sidekiq', params: payload, headers: {'X-Forwarded-For' => '::1'}
+      post '/sidekiq', params: payload(disabled_locations: nil), headers: {'X-Forwarded-For' => '::1'}
       assert_response :success
       assert_equal Updown.last_sidekiq_ping[HOSTNAME].size, 2
     end
@@ -104,6 +105,12 @@ class UpdownTest < ActionDispatch::IntegrationTest
       assert_equal :down, Updown.sidekiq_status[HOSTNAME]
       assert_equal 1, Mail::TestMailer.deliveries.length
       assert_includes Mail::TestMailer.deliveries.first.body.encoded, 'localhost-test sidekiq queue too big: {"default":"5000","mailers":"0"}'
+    end
+
+    test "updates the disabled_locations list" do
+      assert_equal [], Updown.disabled_locations
+      post '/sidekiq', params: payload(disabled_locations: ['rbx'])
+      assert_equal ['rbx'], Updown.disabled_locations
     end
 
     test "marks daemon as down if low queue is high" do
@@ -140,6 +147,14 @@ class UpdownTest < ActionDispatch::IntegrationTest
       srv = Service.create!(name: 'local', permalink: 'daemon-localhost-test', status_id: 1)
       assert_changes -> { srv.reload.status.permalink }, from: 'operational', to: 'partial-outage' do
         post '/sidekiq', params: payload(queues: nil)
+      end
+      assert_equal 'operational', services(:daemon_syd).status.permalink
+    end
+
+    test "marks service as maintenance if disabled" do
+      srv = Service.create!(name: 'local', permalink: 'daemon-localhost-test', status_id: 1)
+      assert_changes -> { srv.reload.status.permalink }, from: 'operational', to: 'maintenance' do
+        post '/sidekiq', params: payload(disabled_locations: ['localhost-test'])
       end
       assert_equal 'operational', services(:daemon_syd).status.permalink
     end
