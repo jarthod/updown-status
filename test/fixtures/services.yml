@@ -83,4 +83,10 @@ daemon_syd:
   position: 12
   status_id: 1
   group_id: 2
-
+daemon_hel:
+  id: 13
+  name: Helsinki, Finland
+  permalink: daemon-hel
+  position: 13
+  status_id: 1
+  group_id: 2
