@@ -192,7 +192,7 @@ module Updown
     healthy = (params[:queues] && params[:queues][:mailers].to_i < 10 && params[:queues][:default].to_i < 5000 && params[:queues][:low].to_i < 10000)
     if healthy && @@sidekiq_status[name] == :down
       @@sidekiq_status[name] = :up
-      notify "SIDEKIQ RECOVERY on #{name}", "#{name} sidekiq is working again"
+      notify "SIDEKIQ RECOVERY on #{name}", "#{name} sidekiq is working again: #{params[:queues].to_json}"
     elsif !healthy && @@sidekiq_status[name] == :up
       @@sidekiq_status[name] = :down
       notify "SIDEKIQ ALERT on #{name}", "#{name} sidekiq queue too big: #{params[:queues].to_json}"

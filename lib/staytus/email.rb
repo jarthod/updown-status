@@ -37,8 +37,10 @@ module Staytus
           body final_html
         end
 
-        mail.deliver
-        mail
+        # Asynchronous sending in the "fast" global thread pool to limit concurrency
+        Concurrent::Promise.new(executor: :fast) do
+          mail.deliver
+        end.execute
       ensure
         Time.zone = original_zone
       end
