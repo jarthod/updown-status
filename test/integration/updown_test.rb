@@ -2,6 +2,10 @@ require_relative "../test_helper"
 
 class UpdownTest < ActionDispatch::IntegrationTest
   class PingEndpointTest < self
+    def teardown
+      ActiveRecord::Base.establish_connection
+    end
+
     test "returns 403 if IP is not allowed" do
       get '/ping', headers: {'X-Forwarded-For' => '3.3.3.3'}
       assert_response :forbidden
@@ -11,6 +15,13 @@ class UpdownTest < ActionDispatch::IntegrationTest
       assert_equal 1, Updown.last_checks[HOSTNAME].size
       get '/ping'
       assert_response :success
+      assert_equal 2, Updown.last_checks[HOSTNAME].size
+    end
+
+    test "register daemon check even in case of database failure" do
+      ActiveRecord::Base.remove_connection
+      assert_equal 1, Updown.last_checks[HOSTNAME].size
+      assert_raises(ActiveRecord::ConnectionNotEstablished) { get '/ping' }
       assert_equal 2, Updown.last_checks[HOSTNAME].size
     end
 
@@ -54,6 +65,10 @@ class UpdownTest < ActionDispatch::IntegrationTest
   end
 
   class SidekiqEndpointTest < self
+    def teardown
+      ActiveRecord::Base.establish_connection
+    end
+
     def payload queues: {default: 0, mailers: 0}, disabled_locations: []
       {env: 'production', queues: queues, disabled_locations: disabled_locations}
     end
@@ -69,6 +84,13 @@ class UpdownTest < ActionDispatch::IntegrationTest
       assert_response :success
       assert_equal Updown.last_sidekiq_ping[HOSTNAME].size, 2
       assert_equal [], Updown.disabled_locations
+    end
+
+    test "register sidekiq check even in case of database failure" do
+      ActiveRecord::Base.remove_connection
+      assert_equal Updown.last_sidekiq_ping[HOSTNAME].size, 1
+      assert_raises(ActiveRecord::ConnectionNotEstablished) { post '/sidekiq', params: payload }
+      assert_equal Updown.last_sidekiq_ping[HOSTNAME].size, 2
     end
 
     test "also accepts IPv6" do
@@ -104,7 +126,7 @@ class UpdownTest < ActionDispatch::IntegrationTest
       post '/sidekiq', params: payload(queues: {default: 5000, mailers: 0})
       assert_equal :down, Updown.sidekiq_status[HOSTNAME]
       assert_equal 1, Mail::TestMailer.deliveries.length
-      assert_includes Mail::TestMailer.deliveries.first.body.encoded, 'localhost-test sidekiq queue too big: {"default":"5000","mailers":"0"}'
+      assert_includes Mail::TestMailer.deliveries.first.body.encoded, 'LOCALHOST-TEST sidekiq queue too big: {"default":"5000","mailers":"0"}'
     end
 
     test "updates the disabled_locations list" do
@@ -192,6 +214,7 @@ class UpdownTest < ActionDispatch::IntegrationTest
       Updown.check_status
       assert_equal :down, Updown.status[HOSTNAME]
       assert_equal 1, Mail::TestMailer.deliveries.length
+      assert_includes Mail::TestMailer.deliveries.first.body.encoded, "LOCALHOST-TEST has stopped monitoring 1h ago"
     end
 
     test "attempts a Vultr restart if no check in more than 1 hour" do
@@ -224,6 +247,16 @@ class UpdownTest < ActionDispatch::IntegrationTest
       Updown.check_status
       assert_equal :down, Updown.status['global']
       assert_equal 1, Mail::TestMailer.deliveries.length
+      assert_includes Mail::TestMailer.deliveries.first.body.encoded, "🔥 No request received for 5m"
+    end
+
+    test "Send one alert email (grouped) if some sidekiq are late more than 5 minutes" do
+      assert_equal 0, Mail::TestMailer.deliveries.length
+      assert_equal :up, Updown.status['global']
+      Updown::WORKERS.each { |ip, hostname| Updown.last_sidekiq_ping[hostname].unshift Time.now - 305 }
+      Updown.check_status
+      assert_equal 1, Mail::TestMailer.deliveries.length
+      assert_includes Mail::TestMailer.deliveries.first.body.encoded, "RBX sidekiq stopped working 5m ago\r\nLAN sidekiq stopped working 5m ago\r\nMIA"
     end
 
     test "updates one service status to major outage if no check in more than 1 hour" do
@@ -241,6 +274,7 @@ class UpdownTest < ActionDispatch::IntegrationTest
         Updown::DAEMONS.each { |ip, hostname| Updown.last_checks[hostname].unshift Time.now - 305 }
         Updown.check_status
       end
+      assert_equal 1, Mail::TestMailer.deliveries.length
     end
 
     test "do not update status for service with ongoing issue" do
@@ -250,6 +284,27 @@ class UpdownTest < ActionDispatch::IntegrationTest
         Updown::DAEMONS.each { |ip, hostname| Updown.last_checks[hostname].unshift Time.now - 305 }
         Updown.check_status
       end
+    end
+  end
+
+  class TextRecapTest < self
+    test "does nothing if all is good" do
+      assert_includes Updown.text_recap, "Daemon: ✔️ LAN (0m) ✔️ MIA (0m) ✔️ BHS (0m) ✔️ RBX (0m) ✔️ FRA (0m) ✔️ HEL (0m) ✔️ SIN (0m) ✔️ TOK (0m) ✔️ SYD (0m) ✔️ LOCALHOST-TEST (0m)"
+      assert_includes Updown.text_recap, "Sidekiq: ✔️ DB3 (0m) ✔️ RBX (0m) ✔️ LAN (0m) ✔️ MIA (0m) ✔️ BHS (0m) ✔️ FRA (0m) ✔️ HEL (0m) ✔️ SIN (0m) ✔️ TOK (0m) ✔️ SYD (0m) ✔️ LOCALHOST-TEST (0m)"
+    end
+
+    test "show host down if no check in more than 1 hour" do
+      Updown.last_checks[HOSTNAME].unshift Time.now - 3601
+      Updown.check_status
+      assert_includes Updown.text_recap, "Daemon: ✔️ LAN (0m) ✔️ MIA (0m) ✔️ BHS (0m) ✔️ RBX (0m) ✔️ FRA (0m) ✔️ HEL (0m) ✔️ SIN (0m) ✔️ TOK (0m) ✔️ SYD (0m) ❌ LOCALHOST-TEST (60m)"
+      assert_includes Updown.text_recap, "Sidekiq: ✔️ DB3 (0m) ✔️ RBX (0m) ✔️ LAN (0m) ✔️ MIA (0m) ✔️ BHS (0m) ✔️ FRA (0m) ✔️ HEL (0m) ✔️ SIN (0m) ✔️ TOK (0m) ✔️ SYD (0m) ✔️ LOCALHOST-TEST (0m)"
+    end
+
+    test "Show sidekiq down if late more than 5 minutes" do
+      Updown::WORKERS.each { |ip, hostname| Updown.last_sidekiq_ping[hostname].unshift Time.now - 305 }
+      Updown.check_status
+      assert_includes Updown.text_recap, "Daemon: ✔️ LAN (0m) ✔️ MIA (0m) ✔️ BHS (0m) ✔️ RBX (0m) ✔️ FRA (0m) ✔️ HEL (0m) ✔️ SIN (0m) ✔️ TOK (0m) ✔️ SYD (0m) ✔️ LOCALHOST-TEST (0m)"
+      assert_includes Updown.text_recap, "Sidekiq: ❌ DB3 (5m) ❌ RBX (5m) ❌ LAN (5m) ❌ MIA (5m) ❌ BHS (5m) ❌ FRA (5m) ❌ HEL (5m) ❌ SIN (5m) ❌ TOK (5m) ❌ SYD (5m) ❌ LOCALHOST-TEST (5m)"
     end
   end
 

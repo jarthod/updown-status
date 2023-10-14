@@ -41,7 +41,7 @@ module Updown
       from    "monitor@updown.io"
       to      "bigbourin@gmail.com"
       subject "[updown status] #{title}"
-      body    "#{body} – https://status.updown.io"
+      body    "#{body}\n—\n#{Updown.text_recap}\n—\nhttps://status.updown.io"
       content_type "text/plain; charset=UTF-8"
     end
   end
@@ -80,33 +80,55 @@ module Updown
 
   def self.check_status
     last_diff = Float::INFINITY
+    alerts = []
     DAEMONS.each do |ip, name|
       if @@last_checks[name].first
         diff = Time.now - @@last_checks[name].first
         last_diff = diff if diff < last_diff
         if diff > 3600 and @@status[name] == :up
           logger = attempt_instance_reboot(name)
-          notify "ALERT on #{name}", "#{name} has stopped monitoring 1h ago\n#{logger&.string}"
+          alerts << "#{name.upcase} has stopped monitoring 1h ago\n#{logger&.string&.chomp}"
           @@status[name] = :down
         end
       end
+    end
+    if last_diff > 300 and @@status['global'] == :up
+      alerts << "🔥 No request received for 5m"
+      @@status['global'] = :down
     end
     WORKERS.each do |ip, name|
       if @@last_sidekiq_ping[name].first
         diff = Time.now - @@last_sidekiq_ping[name].first
         if diff > 300 and @@sidekiq_status[name] == :up
-          notify "SIDEKIQ ALERT on #{name}", "#{name} sidekiq stopped working 5m ago"
+          alerts << "#{name.upcase} sidekiq stopped working 5m ago"
           @@sidekiq_status[name] = :down
         end
       end
     end
-    if last_diff > 300 and @@status['global'] == :up
-      notify "ALERT global", "No request received for 5m"
-      @@status['global'] = :down
-    end
+    notify "#{alerts.size} NEW ALERTS", alerts.join("\n") if alerts.any?
     update_services
   rescue => e
     Rails.logger.warn "[updown] Check status fail: #{e}"
+    raise e if Rails.env.test?
+  end
+
+  def self.text_recap
+    "Daemon: " + DAEMONS.values.uniq.map do |name|
+      diff = (Time.now - @@last_checks[name].first) / 60 if @@last_checks[name].first
+      if @@status[name] == :up
+        "✔️ #{name.upcase} (#{diff&.round}m)"
+      else
+        "❌ #{name.upcase} (#{diff&.round}m)"
+      end
+    end.join(' ') + "\n" +
+    "Sidekiq: " + WORKERS.values.uniq.map do |name|
+      diff = (Time.now - @@last_sidekiq_ping[name].first) / 60 if @@last_sidekiq_ping[name].first
+      if @@sidekiq_status[name] == :up
+        "✔️ #{name.upcase} (#{diff&.round}m)"
+      else
+        "❌ #{name.upcase} (#{diff&.round}m)"
+      end
+    end.join(' ')
   end
 
   def self.check_postmark
@@ -176,7 +198,7 @@ module Updown
     @@last_checks[name] = @@last_checks[name][0, 20] if @@last_checks[name].size > 20
     if @@status[name] == :down
       @@status[name] = :up
-      notify "RECOVERY on #{name}", "#{name} is monitoring again"
+      notify "RECOVERY on #{name.upcase}", "#{name.upcase} is monitoring again"
     end
     if @@status['global'] == :down
       @@status['global'] = :up
@@ -192,10 +214,10 @@ module Updown
     healthy = (params[:queues] && params[:queues][:mailers].to_i < 10 && params[:queues][:default].to_i < 5000 && params[:queues][:low].to_i < 10000)
     if healthy && @@sidekiq_status[name] == :down
       @@sidekiq_status[name] = :up
-      notify "SIDEKIQ RECOVERY on #{name}", "#{name} sidekiq is working again: #{params[:queues].to_json}"
+      notify "SIDEKIQ RECOVERY on #{name.upcase}", "#{name.upcase} sidekiq is working again: #{params[:queues].to_json}"
     elsif !healthy && @@sidekiq_status[name] == :up
       @@sidekiq_status[name] = :down
-      notify "SIDEKIQ ALERT on #{name}", "#{name} sidekiq queue too big: #{params[:queues].to_json}"
+      notify "SIDEKIQ ALERT on #{name.upcase}", "#{name.upcase} sidekiq queue too big: #{params[:queues].to_json}"
     end
     update_services
   end
