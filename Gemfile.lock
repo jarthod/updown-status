@@ -189,7 +189,6 @@ GEM
       mini_portile2 (~> 2.6.1)
       racc (~> 1.4)
     numerizer (0.1.1)
-    pg (1.2.3)
     phony (2.18.12)
     premailer (1.11.1)
       addressable
@@ -252,6 +251,7 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
+    sqlite3 (1.4.4)
     temple (0.8.2)
     thor (0.19.4)
     thread_safe (0.3.6)
@@ -299,7 +299,6 @@ DEPENDENCIES
   nifty-attachments
   nifty-utils
   nilify_blanks
-  pg
   premailer
   puma
   rack-custom-proxies
@@ -308,6 +307,7 @@ DEPENDENCIES
   redcarpet
   sass-rails
   sassc (= 2.1.0)
+  sqlite3
   uglifier
   vultr
   webmock

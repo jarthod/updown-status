@@ -12,9 +12,6 @@
 
 ActiveRecord::Schema.define(version: 2020_11_30_164954) do
 
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
-
   create_table "api_tokens", force: :cascade do |t|
     t.string "name"
     t.string "token"
@@ -112,7 +109,7 @@ ActiveRecord::Schema.define(version: 2020_11_30_164954) do
     t.boolean "notify", default: false
   end
 
-  create_table "login_events", id: :serial, force: :cascade do |t|
+  create_table "login_events", force: :cascade do |t|
     t.string "user_type"
     t.integer "user_id"
     t.string "username"
@@ -169,7 +166,7 @@ ActiveRecord::Schema.define(version: 2020_11_30_164954) do
     t.string "role"
     t.string "file_name"
     t.string "file_type"
-    t.binary "data"
+    t.binary "data", limit: 10485760
     t.datetime "created_at"
     t.datetime "updated_at"
   end

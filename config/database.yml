@@ -1,0 +1,21 @@
+# Database configuration for Staytus.
+#
+# By default, Staytus works with a MySQL database. While
+# it may work with other engines, they are untested and
+# currently unsupported. You can make changes to this file
+# to specify the database to connect to.
+
+production:
+  adapter: sqlite3
+  database: /var/data/staytus_prod.sqlite3
+  timeout: 5000
+
+development:
+  adapter: sqlite3
+  database: db/staytus_dev.sqlite3
+  timeout: 5000
+
+test:
+  adapter: sqlite3
+  database: db/staytus_test.sqlite3
+  timeout: 5000

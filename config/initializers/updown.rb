@@ -41,7 +41,7 @@ module Updown
       from    "monitor@updown.io"
       to      "bigbourin@gmail.com"
       subject "[updown status] #{title}"
-      body    "#{body}\n—\n#{Updown.text_recap}\n—\nhttps://status.updown.io"
+      body    "#{body}\n—\n#{Updown.text_recap}\n—\n#{Time.new}\nhttps://status.updown.io"
       content_type "text/plain; charset=UTF-8"
     end
   end
@@ -105,7 +105,7 @@ module Updown
         end
       end
     end
-    notify "#{alerts.size} NEW ALERTS", alerts.join("\n") if alerts.any?
+    notify "ALERT", alerts.join("\n") if alerts.any?
     update_services
   rescue => e
     Rails.logger.warn "[updown] Check status fail: #{e}"
@@ -198,11 +198,11 @@ module Updown
     @@last_checks[name] = @@last_checks[name][0, 20] if @@last_checks[name].size > 20
     if @@status[name] == :down
       @@status[name] = :up
-      notify "RECOVERY on #{name.upcase}", "#{name.upcase} is monitoring again"
+      notify "RECOVERY", "#{name.upcase} is monitoring again"
     end
     if @@status['global'] == :down
       @@status['global'] = :up
-      notify "RECOVERY global", "updown is monitoring again"
+      notify "RECOVERY", "updown is monitoring again"
     end
     update_services
   end
@@ -214,10 +214,10 @@ module Updown
     healthy = (params[:queues] && params[:queues][:mailers].to_i < 10 && params[:queues][:default].to_i < 5000 && params[:queues][:low].to_i < 10000)
     if healthy && @@sidekiq_status[name] == :down
       @@sidekiq_status[name] = :up
-      notify "SIDEKIQ RECOVERY on #{name.upcase}", "#{name.upcase} sidekiq is working again: #{params[:queues].to_json}"
+      notify "RECOVERY", "#{name.upcase} sidekiq is working again: #{params[:queues].to_json}"
     elsif !healthy && @@sidekiq_status[name] == :up
       @@sidekiq_status[name] = :down
-      notify "SIDEKIQ ALERT on #{name.upcase}", "#{name.upcase} sidekiq queue too big: #{params[:queues].to_json}"
+      notify "ALERT", "#{name.upcase} sidekiq queue too big: #{params[:queues].to_json}"
     end
     update_services
   end

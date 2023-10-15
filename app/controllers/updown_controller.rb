@@ -28,6 +28,11 @@ class UpdownController < ApplicationController
   end
 
   def remote_ip
-    request.remote_ip
+    if request.forwarded_for.present?
+      # Find any IP in the X-forwarded-for matching
+      request.forwarded_for.find { |ip| Updown::WORKERS[ip] }
+    else
+      request.remote_ip
+    end
   end
 end

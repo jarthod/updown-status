@@ -16,6 +16,7 @@ module Staytus
       g.javascripts     false
       g.helper          false
     end
+    config.active_record.sqlite3.represent_boolean_as_integer = true
     config.i18n.load_path += Dir[Rails.root.join('content', 'locales', '*.{rb,yml}').to_s]
   end
 end

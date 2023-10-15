@@ -15,21 +15,15 @@ Run specs:
 rake
 ```
 
-Deploy on Railway:
+Deploy on Render:
 ```sh
-railway up
+git push
 ```
 
-PG database dump
+Database dump
 ```sh
-# Get Railway database credentials
-railway variables | fgrep DATABASE_URL
-# Dump from production
-pg_dump postgresql://xxxx/railway -Ft > ./updown-status.dump
-# restore database dump to dev
-pg_restore --clean --no-owner -d staytus_dev updown-status.dump
-# restore database dump to railway
-pg_restore --clean --no-owner postgresql://xxxx/railway updown-status.dump
+# Import Render production DB in dev (invert to push DB to prod)
+scp -s srv-cklr2o2v7m0s73al2020@ssh.frankfurt.render.com:/var/data/staytus_prod.sqlite3 db/staytus_dev.sqlite3
 ```
 
 Fake monitoring requests:

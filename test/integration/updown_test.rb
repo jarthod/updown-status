@@ -32,6 +32,13 @@ class UpdownTest < ActionDispatch::IntegrationTest
       assert_equal 2, Updown.last_checks[HOSTNAME].size
     end
 
+    test "supports when real IP is behind other proxies" do
+      assert_equal 1, Updown.last_checks[HOSTNAME].size
+      get '/ping', headers: {'X-Forwarded-For' => '::1, 192.192.192.192'}
+      assert_response :success
+      assert_equal 2, Updown.last_checks[HOSTNAME].size
+    end
+
     test "caps history at 20" do
       assert_equal 1, Updown.last_checks[HOSTNAME].size
       19.times { get '/ping' }
