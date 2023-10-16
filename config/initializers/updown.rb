@@ -1,6 +1,8 @@
 require 'net/http'
 require 'json'
 
+Authie.config.session_inactivity_timeout = 12.months
+
 module Updown
   DAEMONS = {
     '45.32.74.41' => 'lan',
