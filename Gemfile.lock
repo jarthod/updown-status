@@ -199,6 +199,8 @@ GEM
       nio4r (~> 2.0)
     racc (1.5.2)
     rack (2.2.3)
+    rack-attack (6.7.0)
+      rack (>= 1.0, < 4)
     rack-custom-proxies (1.0.1)
       rack
     rack-test (1.1.0)
@@ -301,6 +303,7 @@ DEPENDENCIES
   nilify_blanks
   premailer
   puma
+  rack-attack
   rack-custom-proxies
   rails (~> 5.2)
   rails_env_config
@@ -313,4 +316,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   2.3.21
+   2.4.22
