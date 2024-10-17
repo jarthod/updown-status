@@ -247,6 +247,16 @@ class UpdownTest < ActionDispatch::IntegrationTest
       assert_includes Mail::TestMailer.deliveries.first.body.encoded, "No Vultr instance found with hostname=localhost-test.updn.io"
     end
 
+    test "skips Vultr restart if machine is manually disabled" do
+      ENV["VULTR_API_KEY"] = "test"
+      assert_equal :up, Updown.status[HOSTNAME]
+      Updown.disabled_locations = [HOSTNAME]
+      Updown.last_checks[HOSTNAME].unshift Time.now - 3601
+      Updown.check_status
+      assert_equal :down, Updown.status[HOSTNAME]
+      assert_includes Mail::TestMailer.deliveries.first.body.encoded, "Manually disabled"
+    end
+
     test "mark global down if no check in more than 5 minutes" do
       assert_equal 0, Mail::TestMailer.deliveries.length
       assert_equal :up, Updown.status['global']

@@ -88,8 +88,12 @@ module Updown
         diff = Time.now - @@last_checks[name].first
         last_diff = diff if diff < last_diff
         if diff > 3600 and @@status[name] == :up
-          logger = attempt_instance_reboot(name)
-          alerts << "#{name.upcase} has stopped monitoring 1h ago\n#{logger&.string&.chomp}"
+          alerts << "#{name.upcase} has stopped monitoring 1h ago"
+          if @@disabled_locations.include?(name)
+            alerts << "→ Manually disabled (https://updown.io/admin/ops)"
+          else
+            alerts << attempt_instance_reboot(name)&.string&.chomp
+          end
           @@status[name] = :down
         end
       end
