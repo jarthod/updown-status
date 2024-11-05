@@ -35,7 +35,7 @@ class ApplicationController < ActionController::Base
 
   def ensure_site
     unless site.is_a?(Site)
-      redirect_to setup_path(:step1)
+      redirect_to setup_step1_path
     end
   end
 

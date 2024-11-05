@@ -10,13 +10,13 @@ class SetupController < ApplicationController
 
   def step2
     if User.first
-      redirect_to setup_path(:step3)
+      redirect_to setup_step3_path
     end
 
     if request.post?
       @user = User.new(params.require(:user).permit(:name, :email_address, :password, :password_confirmation))
       if @user.save
-        redirect_to setup_path(:step3), :notice => "Great! You will be able to login using those details when this wizard is complete."
+        redirect_to setup_step3_path, :notice => "Great! You will be able to login using those details when this wizard is complete."
       else
         render 'step2'
       end
