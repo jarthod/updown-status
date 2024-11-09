@@ -11,7 +11,7 @@ module Staytus
       end
 
       def version
-        '1.3.2'
+        '1.3.3'
       end
 
       def demo?
