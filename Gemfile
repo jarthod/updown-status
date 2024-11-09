@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-gem 'rails', '~> 5.2'
+gem 'rails', '~> 6.0.6'
 gem 'sqlite3'
 gem 'sass-rails'
 gem 'uglifier'
@@ -29,6 +29,7 @@ gem 'rack-custom-proxies'
 gem 'log_logins'
 
 group :development, :test do
+  gem 'listen'
   gem 'annotate'
   gem 'webmock'
   gem 'capybara'

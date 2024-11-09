@@ -1,5 +1,3 @@
-require 'staytus/version'
-
 module Staytus
   module Config
     class << self
@@ -13,7 +11,7 @@ module Staytus
       end
 
       def version
-        Staytus::VERSION
+        '1.3.2'
       end
 
       def demo?
