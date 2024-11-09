@@ -184,7 +184,7 @@ module Updown
     end
     Rails.logger.info "[updown] Postmark check: #{status}. Service status: #{service.status_id} → #{target}"
     if target != service.status_id and service.no_manual_status?
-      service.update_attribute(:status_id, target)
+      service.update status_id: target
     end
   rescue => e
     Rails.logger.warn "[updown] Postmark check fail: #{e}"
@@ -207,7 +207,7 @@ module Updown
     end
     Rails.logger.info "[updown] Web check (#{url}): #{response} (#{timing.round(1)} ms) Service status: #{service.status_id} → #{target}"
     if target != service.status_id and service.no_manual_status?
-      service.update_attribute(:status_id, target)
+      service.update status_id: target
     end
   end
 
@@ -271,7 +271,7 @@ module Updown
         end
         if target != service.status_id and service.no_manual_status?
           Rails.logger.info "[updown] Updating service #{service.permalink}: #{service.status_id} → #{target}"
-          service.update_attribute(:status_id, target)
+          service.update status_id: target
         end
       end
     end

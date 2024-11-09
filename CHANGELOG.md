@@ -12,6 +12,7 @@ see this in a master branch.
 
 * Upgrade underlying Rails version to 6.1
 * Upgrade authie to version 4
+* Upgrade Ruby to 3.3
 
 ## v1.3.0
 

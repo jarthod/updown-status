@@ -124,4 +124,21 @@ class AdminTest < ActionDispatch::IntegrationTest
     end
     assert_equal 1, HistoryItem.count
   end
+
+  test "can update settings" do
+    login
+    click_on 'Settings'
+    assert_current_path '/admin/settings'
+    click_on 'General Settings'
+    assert_current_path '/admin/settings/general'
+    fill_in 'Title', with: "Site name"
+    uncheck 'Yes - allow search engines to index the public status site'
+    select '(GMT-09:00) Alaska'
+    click_on 'Save Settings'
+    assert_css ".flashMessage", text: "Settings have been saved successfully."
+    site = Site.first
+    assert_equal "Site name", site.title
+    assert_equal false, site.crawling_permitted
+    assert_equal "Alaska", site.time_zone
+  end
 end
