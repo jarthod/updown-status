@@ -1,7 +1,7 @@
 class UpdownController < ApplicationController
   # Disable any action that require DB so that these action can work without it. They may still
   # fail at the end when Services are updated, but at least the important memory state would be ok.
-  skip_before_action :verify_authenticity_token, :ensure_site, :touch_auth_session, :set_browser_id
+  skip_before_action :verify_authenticity_token, :ensure_site, :set_browser_id
   skip_around_action :set_time_zone
 
   def ping

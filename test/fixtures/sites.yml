@@ -1,3 +1,21 @@
+# == Schema Information
+#
+# Table name: sites
+#
+#  id                  :integer          not null, primary key
+#  allow_subscriptions :boolean          default(TRUE)
+#  crawling_permitted  :boolean          default(FALSE)
+#  description         :string
+#  domain              :string
+#  email_from_address  :string
+#  email_from_name     :string
+#  http_protocol       :string
+#  privacy_policy_url  :string
+#  support_email       :string
+#  time_zone           :string
+#  title               :string
+#  website_url         :string
+#
 updown:
   id: 1
   title: updown.io status
