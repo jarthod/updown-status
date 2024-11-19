@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-gem 'rails', '~> 6.1'
+gem 'rails', '~> 7.0.0'
 gem 'sqlite3'
 gem 'sass-rails'
 gem 'uglifier'
@@ -35,6 +35,6 @@ group :development, :test do
   gem 'capybara'
 end
 
-gem 'sassc', '2.1.0' # force version which have static linux binary for faster install
-gem 'vultr' # trigger vultr VM restarts
+gem 'sassc'
+gem 'vultr', '~> 1.0' # trigger vultr VM restarts, v2 looks like a big rewrite
 gem 'rack-attack'

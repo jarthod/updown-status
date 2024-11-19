@@ -15,7 +15,7 @@
           %dd.fieldSet__input
             .u-margin
               - if @maintenance.start_at && @maintenance.start_at_was != @maintenance.start_at
-                %p.chronicPreview= @maintenance.start_at.to_s(:long)
+                %p.chronicPreview= @maintenance.start_at.to_fs(:long)
               = f.text_field :start_at_as_string, :class => 'textInput has-chronicPreview', :required => true, :placeholder => "e.g. tomorrow at 2pm or 2015-12-23 13:40"
       .col.col--8
         %dl.fieldSet__field.u-margin

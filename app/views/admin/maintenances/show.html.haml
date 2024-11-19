@@ -13,11 +13,11 @@
   %dl.definition.u-margin
     %dt Time Period
     %dd
-      = @maintenance.start_at.to_s(:long)
+      = @maintenance.start_at.to_fs(:long)
       for #{@maintenance.length_in_minutes_as_string}
   %dl.definition.u-margin
     %dt Completion Time
-    %dd= @maintenance.finish_at.to_s(:long)
+    %dd= @maintenance.finish_at.to_fs(:long)
   %dl.definition.u-margin
     %dt Status
     %dd= maintenance_status_tag @maintenance.status
