@@ -61,7 +61,7 @@ module Updown
   }
 
   WORKERS = WEB.merge(DAEMONS)
-  REFRESH_RATE = 60 # sec
+  REFRESH_RATE = 10 # sec
 
   mattr_accessor :last_checks, :status, :sidekiq_status, :last_sidekiq_ping, :disabled_locations
 
@@ -287,6 +287,9 @@ module Updown
       Updown.check_status
       Updown.check_postmark
       Updown.check_web_urls
+      # try to find a memory leak
+      GC.start
+      Rails.logger.info "[updown] Ruby ObjectSpace after GC #{ObjectSpace.count_objects}"
     end
   end
 
