@@ -61,7 +61,7 @@ module Updown
   }
 
   WORKERS = WEB.merge(DAEMONS)
-  REFRESH_RATE = 10 # sec
+  REFRESH_RATE = 60 # sec
 
   mattr_accessor :last_checks, :status, :sidekiq_status, :last_sidekiq_ping, :disabled_locations
 
@@ -182,7 +182,7 @@ module Updown
     else
       1 # operational
     end
-    Rails.logger.info "[updown] Postmark check: #{status}. Service status: #{service.status_id} → #{target}"
+    Rails.logger.info "[updown] Postmark check: #{api_state}, #{smtp_state}. Service status: #{service.status_id} → #{target}"
     if target != service.status_id and service.no_manual_status?
       service.update status_id: target
     end

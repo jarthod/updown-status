@@ -1,3 +1,4 @@
+=begin
 class Rack::Attack
   # safelist_ip("5.6.7.0/24")
   # blocklist_ip("1.2.0.0/16")
@@ -43,3 +44,4 @@ end
 ActiveSupport::Notifications.subscribe(/rack_attack/) do |name, start, finish, request_id, payload|
   Rails.logger.warn "Blocked by RackAttack: #{payload[:request].env['rack.attack.match_data']} #{payload[:request].env["rack.attack.throttle_data"]}"
 end
+=end
