@@ -1,5 +1,6 @@
 require 'net/http'
 require 'json'
+require 'httpx'
 
 Authie.config.session_inactivity_timeout = 12.months
 
@@ -167,7 +168,8 @@ module Updown
 
   def self.check_postmark
     # https://status.postmarkapp.com/api
-    response = Net::HTTP.get(URI("https://status.postmarkapp.com/api/v1/components"))
+    # response = Net::HTTP.get(URI("https://status.postmarkapp.com/api/v1/components"))
+    response = HTTPX.get("https://status.postmarkapp.com/api/v1/components").to_s
     components = JSON.parse(response).fetch('components')
     api_state = components.find {|s| s['name'].include?("API") }&.dig('state')
     smtp_state = components.find {|s| s['name'].include?("SMTP (sending)") }&.dig('state')
@@ -182,7 +184,7 @@ module Updown
     else
       1 # operational
     end
-    Rails.logger.info "[updown] Postmark check: #{status}. Service status: #{service.status_id} → #{target}"
+    Rails.logger.info "[updown] Postmark check: #{api_state}, #{smtp_state}. Service status: #{service.status_id} → #{target}"
     if target != service.status_id and service.no_manual_status?
       service.update status_id: target
     end
@@ -194,8 +196,9 @@ module Updown
     response = nil
     timing = Benchmark.ms do
       begin
-        uri = URI(url)
-        response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https', open_timeout: timeout, read_timeout: timeout) { |http| http.head(uri).code.to_i }
+        # uri = URI(url)
+        # response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https', open_timeout: timeout, read_timeout: timeout) { |http| http.head(uri).code.to_i }
+        response = HTTPX.with(timeout: { connect_timeout: timeout, read_timeout: timeout }).head(url).status
       rescue => e
         response = e
       end
@@ -289,7 +292,7 @@ module Updown
       Updown.check_web_urls
       # try to find a memory leak
       GC.start
-      Rails.logger.info "[updown] Ruby ObjectSpace after GC #{ObjectSpace.count_objects}"
+      Rails.logger.info "[updown] Ruby ObjectSpace after GC #{ObjectSpace.count_objects} (#{ObjectSpace.count_imemo_objects})"
     end
   end
 
