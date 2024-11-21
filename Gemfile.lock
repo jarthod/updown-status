@@ -169,9 +169,6 @@ GEM
       tilt
     hashdiff (1.1.2)
     htmlentities (4.3.4)
-    http-2 (1.0.2)
-    httpx (1.3.4)
-      http-2 (>= 1.0.0)
     i18n (1.14.6)
       concurrent-ruby (~> 1.0)
     i18n_data (0.11.0)
@@ -329,7 +326,7 @@ GEM
     websocket-extensions (0.1.5)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    zeitwerk (2.6.18)
+    zeitwerk (2.7.1)
 
 PLATFORMS
   ruby
@@ -349,7 +346,6 @@ DEPENDENCIES
   florrick
   foreman
   haml
-  httpx
   jquery-rails
   kaminari
   listen
