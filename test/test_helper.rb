@@ -32,6 +32,6 @@ class ActionDispatch::IntegrationTest
   teardown do
     Capybara.reset_sessions!
     Capybara.use_default_driver
-    # Rack::Attack.reset!
+    Rack::Attack.reset!
   end
 end

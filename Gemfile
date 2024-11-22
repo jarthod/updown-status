@@ -37,4 +37,4 @@ end
 
 gem 'sassc'
 gem 'vultr', '~> 1.0' # trigger vultr VM restarts, v2 looks like a big rewrite
-#  gem 'rack-attack'
+gem 'rack-attack'

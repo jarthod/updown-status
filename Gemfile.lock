@@ -242,6 +242,8 @@ GEM
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (2.2.10)
+    rack-attack (6.7.0)
+      rack (>= 1.0, < 4)
     rack-custom-proxies (1.0.3)
       rack
     rack-test (2.1.0)
@@ -354,6 +356,7 @@ DEPENDENCIES
   nilify_blanks
   premailer
   puma
+  rack-attack
   rack-custom-proxies
   rails (~> 7.0.0)
   rails_env_config
