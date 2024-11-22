@@ -14,5 +14,7 @@
 config/environment.yml
 config/secret_token.yml
 public/assets
-db/*.sqlite3
+db/*.sqlite3*
 Procfile.local
+
+/config/master.key

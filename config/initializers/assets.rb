@@ -11,6 +11,7 @@ Rails.application.config.assets.version = "1.0"
 # folder are already added.
 Rails.application.config.assets.precompile += %w( admin.js admin.css )
 
+require 'staytus/config'
 if File.exist?(Staytus::Config.theme_root)
   Rails.application.config.assets.paths << File.join(Staytus::Config.theme_root, 'assets', 'images')
   Rails.application.config.assets.paths << File.join(Staytus::Config.theme_root, 'assets', 'javascripts')

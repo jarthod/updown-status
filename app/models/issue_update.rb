@@ -3,15 +3,15 @@
 # Table name: issue_updates
 #
 #  id                :integer          not null, primary key
-#  issue_id          :integer
-#  user_id           :integer
-#  service_status_id :integer
-#  state             :string(255)
-#  text              :text(65535)
+#  identifier        :string
+#  notify            :boolean          default(FALSE)
+#  state             :string
+#  text              :text
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
-#  identifier        :string(255)
-#  notify            :boolean          default(FALSE)
+#  issue_id          :integer
+#  service_status_id :integer
+#  user_id           :integer
 #
 
 class IssueUpdate < ActiveRecord::Base

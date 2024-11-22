@@ -3,13 +3,13 @@
 # Table name: maintenance_updates
 #
 #  id             :integer          not null, primary key
-#  maintenance_id :integer
-#  user_id        :integer
-#  text           :text(65535)
+#  identifier     :string
+#  notify         :boolean          default(FALSE)
+#  text           :text
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
-#  identifier     :string(255)
-#  notify         :boolean          default(FALSE)
+#  maintenance_id :integer
+#  user_id        :integer
 #
 
 class MaintenanceUpdate < ActiveRecord::Base

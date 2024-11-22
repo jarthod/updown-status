@@ -10,14 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[6.1].define(version: 2024_11_09_155334) do
-
+ActiveRecord::Schema[7.1].define(version: 2024_11_09_155334) do
   create_table "api_tokens", force: :cascade do |t|
     t.string "name"
     t.string "token"
     t.string "secret"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "authie_sessions", force: :cascade do |t|
@@ -26,21 +25,21 @@ ActiveRecord::Schema[6.1].define(version: 2024_11_09_155334) do
     t.integer "user_id"
     t.boolean "active", default: true
     t.text "data"
-    t.datetime "expires_at"
-    t.datetime "login_at"
+    t.datetime "expires_at", precision: nil
+    t.datetime "login_at", precision: nil
     t.string "login_ip"
-    t.datetime "last_activity_at"
+    t.datetime "last_activity_at", precision: nil
     t.string "last_activity_ip"
     t.string "last_activity_path"
     t.string "user_agent"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "user_type"
     t.integer "parent_id"
-    t.datetime "two_factored_at"
+    t.datetime "two_factored_at", precision: nil
     t.string "two_factored_ip"
     t.integer "requests", default: 0
-    t.datetime "password_seen_at"
+    t.datetime "password_seen_at", precision: nil
     t.string "token_hash"
     t.string "host"
     t.boolean "skip_two_factor", default: false
@@ -58,13 +57,13 @@ ActiveRecord::Schema[6.1].define(version: 2024_11_09_155334) do
     t.integer "attempts", default: 0, null: false
     t.text "handler", null: false
     t.text "last_error"
-    t.datetime "run_at"
-    t.datetime "locked_at"
-    t.datetime "failed_at"
+    t.datetime "run_at", precision: nil
+    t.datetime "locked_at", precision: nil
+    t.datetime "failed_at", precision: nil
     t.string "locked_by"
     t.string "queue"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
@@ -72,21 +71,21 @@ ActiveRecord::Schema[6.1].define(version: 2024_11_09_155334) do
     t.string "name"
     t.string "subject"
     t.text "content"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "history_items", force: :cascade do |t|
     t.string "item_type"
     t.integer "item_id"
-    t.datetime "date"
+    t.datetime "date", precision: nil
   end
 
   create_table "issue_service_joins", force: :cascade do |t|
     t.integer "issue_id"
     t.integer "service_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "issue_updates", force: :cascade do |t|
@@ -95,8 +94,8 @@ ActiveRecord::Schema[6.1].define(version: 2024_11_09_155334) do
     t.integer "service_status_id"
     t.string "state"
     t.text "text"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "identifier"
     t.boolean "notify", default: false
   end
@@ -106,8 +105,8 @@ ActiveRecord::Schema[6.1].define(version: 2024_11_09_155334) do
     t.string "state"
     t.integer "service_status_id"
     t.boolean "all_services", default: true
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.integer "user_id"
     t.string "identifier"
     t.boolean "notify", default: false
@@ -121,7 +120,7 @@ ActiveRecord::Schema[6.1].define(version: 2024_11_09_155334) do
     t.string "interface"
     t.string "ip"
     t.string "user_agent"
-    t.datetime "created_at"
+    t.datetime "created_at", precision: nil
     t.index ["created_at"], name: "index_login_events_on_created_at"
     t.index ["interface"], name: "index_login_events_on_interface"
     t.index ["ip", "id"], name: "index_login_events_on_ip_and_id"
@@ -133,16 +132,16 @@ ActiveRecord::Schema[6.1].define(version: 2024_11_09_155334) do
   create_table "maintenance_service_joins", force: :cascade do |t|
     t.integer "maintenance_id"
     t.integer "service_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "maintenance_updates", force: :cascade do |t|
     t.integer "maintenance_id"
     t.integer "user_id"
     t.text "text"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "identifier"
     t.boolean "notify", default: false
   end
@@ -150,14 +149,14 @@ ActiveRecord::Schema[6.1].define(version: 2024_11_09_155334) do
   create_table "maintenances", force: :cascade do |t|
     t.string "title"
     t.text "description"
-    t.datetime "start_at"
-    t.datetime "finish_at"
+    t.datetime "start_at", precision: nil
+    t.datetime "finish_at", precision: nil
     t.integer "length_in_minutes"
     t.integer "user_id"
     t.integer "service_status_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "closed_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "closed_at", precision: nil
     t.string "identifier"
     t.boolean "notify", default: false
   end
@@ -171,14 +170,14 @@ ActiveRecord::Schema[6.1].define(version: 2024_11_09_155334) do
     t.string "file_name"
     t.string "file_type"
     t.binary "data", limit: 10485760
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "service_groups", force: :cascade do |t|
     t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "service_statuses", force: :cascade do |t|
@@ -186,16 +185,16 @@ ActiveRecord::Schema[6.1].define(version: 2024_11_09_155334) do
     t.string "permalink"
     t.string "color"
     t.string "status_type"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "services", force: :cascade do |t|
     t.string "name"
     t.string "permalink"
     t.integer "position"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.integer "status_id"
     t.text "description"
     t.integer "group_id"
@@ -219,24 +218,24 @@ ActiveRecord::Schema[6.1].define(version: 2024_11_09_155334) do
   create_table "subscriber_service_joins", force: :cascade do |t|
     t.integer "subscriber_id"
     t.integer "service_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "subscribers", force: :cascade do |t|
     t.string "email_address"
     t.string "verification_token"
-    t.datetime "verified_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "verified_at", precision: nil
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "users", force: :cascade do |t|
     t.string "email_address"
     t.string "name"
     t.string "password_digest"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
 end

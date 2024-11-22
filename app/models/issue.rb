@@ -3,15 +3,15 @@
 # Table name: issues
 #
 #  id                :integer          not null, primary key
-#  title             :string(255)
-#  state             :string(255)
-#  service_status_id :integer
 #  all_services      :boolean          default(TRUE)
+#  identifier        :string
+#  notify            :boolean          default(FALSE)
+#  state             :string
+#  title             :string
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
+#  service_status_id :integer
 #  user_id           :integer
-#  identifier        :string(255)
-#  notify            :boolean          default(FALSE)
 #
 
 class Issue < ActiveRecord::Base

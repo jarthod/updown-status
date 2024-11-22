@@ -21,7 +21,12 @@ Bundler.require(*Rails.groups)
 module Staytus
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 7.0
+    config.load_defaults 7.1
+
+    # Please, add to the `ignore` list any other `lib` subdirectories that do
+    # not contain `.rb` files, or that should not be reloaded or eager loaded.
+    # Common ones are `templates`, `generators`, or `middleware`, for example.
+    config.autoload_lib(ignore: %w(assets tasks))
 
     # Configuration for the application, engines, and railties goes here.
     #
@@ -29,14 +34,9 @@ module Staytus
     # in config/environments, which are processed later.
     #
     # config.time_zone = "Central Time (US & Canada)"
-    config.autoload_once_paths << Rails.root.join("lib")
-    config.generators do |g|
-      g.orm             :active_record
-      g.test_framework  false
-      g.stylesheets     false
-      g.javascripts     false
-      g.helper          false
-    end
+    # config.eager_load_paths << Rails.root.join("extras")
+
     config.i18n.load_path += Dir[Rails.root.join('content', 'locales', '*.{rb,yml}').to_s]
+    config.active_record.default_column_serializer = JSON # for Authie compatibility with Rails 7.1+
   end
 end

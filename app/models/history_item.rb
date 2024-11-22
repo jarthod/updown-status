@@ -3,9 +3,9 @@
 # Table name: history_items
 #
 #  id        :integer          not null, primary key
-#  item_type :string(255)
-#  item_id   :integer
 #  date      :datetime
+#  item_type :string
+#  item_id   :integer
 #
 
 class HistoryItem < ActiveRecord::Base

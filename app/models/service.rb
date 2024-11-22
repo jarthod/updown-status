@@ -3,14 +3,14 @@
 # Table name: services
 #
 #  id          :integer          not null, primary key
-#  name        :string(255)
-#  permalink   :string(255)
+#  description :text
+#  name        :string
+#  permalink   :string
 #  position    :integer
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
-#  status_id   :integer
-#  description :text(65535)
 #  group_id    :integer
+#  status_id   :integer
 #
 
 class Service < ActiveRecord::Base

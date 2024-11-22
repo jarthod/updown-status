@@ -3,18 +3,18 @@
 # Table name: maintenances
 #
 #  id                :integer          not null, primary key
-#  title             :string(255)
-#  description       :text(65535)
-#  start_at          :datetime
+#  closed_at         :datetime
+#  description       :text
 #  finish_at         :datetime
+#  identifier        :string
 #  length_in_minutes :integer
-#  user_id           :integer
-#  service_status_id :integer
+#  notify            :boolean          default(FALSE)
+#  start_at          :datetime
+#  title             :string
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
-#  closed_at         :datetime
-#  identifier        :string(255)
-#  notify            :boolean          default(FALSE)
+#  service_status_id :integer
+#  user_id           :integer
 #
 
 class Maintenance < ActiveRecord::Base
