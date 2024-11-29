@@ -10,7 +10,7 @@ see this in a master branch.
 
 ## v1.3.5
 
-* Upgrade underlying Rails version to 7.1
+* Upgrade underlying Rails version to 7.2
 
 ## v1.3.4
 
