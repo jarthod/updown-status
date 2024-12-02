@@ -28,6 +28,7 @@ class PagesController < ApplicationController
     text = []
     text << "User-agent: *"
     text << "Disallow: /admin"
+    text << "Disallow: /subscribe"
     unless site.crawling_permitted?
       text << "Disallow: /"
     end
@@ -49,6 +50,7 @@ class PagesController < ApplicationController
   end
 
   before_action :check_whether_subscriptions_are_enabled, :only => [:subscribe, :subscribe_by_email]
+  invisible_captcha only: [:subscribe_by_email], honeypot: :name, on_timestamp_spam: :too_fast_spam_suspicion
 
   def subscribe
   end
@@ -64,6 +66,12 @@ class PagesController < ApplicationController
   end
 
   private
+
+  def too_fast_spam_suspicion
+    # override default to use flash[:alert] instead of :error
+    flash[:alert] = InvisibleCaptcha.timestamp_error_message
+    redirect_back(fallback_location: subscribe_path)
+  end
 
   def check_whether_subscriptions_are_enabled
     unless site.allow_subscriptions?

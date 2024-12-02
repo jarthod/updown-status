@@ -182,6 +182,8 @@ GEM
     i18n (1.14.6)
       concurrent-ruby (~> 1.0)
     i18n_data (0.11.0)
+    invisible_captcha (2.3.0)
+      rails (>= 5.2)
     io-console (0.7.2)
     irb (1.14.1)
       rdoc (>= 4.0.0)
@@ -374,6 +376,7 @@ DEPENDENCIES
   florrick
   foreman
   haml
+  invisible_captcha
   jquery-rails
   kaminari
   listen
