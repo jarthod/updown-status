@@ -125,6 +125,45 @@ class AdminTest < ActionDispatch::IntegrationTest
     assert_equal 1, HistoryItem.count
   end
 
+  test "can manage subscribers" do
+    login
+    click_on 'Subscribers'
+    assert_current_path '/admin/subscribers'
+    # Create
+    click_on 'Add a new subscriber'
+    assert_current_path '/admin/subscribers/new'
+    fill_in 'subscriber_email_address', with: "bob@example.com"
+    click_on 'Create Subscriber'
+    assert_css ".flashMessage", text: "Subscriber has been created"
+    assert_css "td", text: "bob@example.com"
+    Subscriber.update_all(verified_at: nil) # mark as not verified
+    click_on 'Add a new subscriber'
+    fill_in 'subscriber_email_address', with: "alice@example.com"
+    click_on 'Create Subscriber'
+    assert_css ".flashMessage", text: "Subscriber has been created"
+    # Verify
+    click_on 'Verify'
+    assert_css ".flashMessage", text: "bob@example.com has been verified successfully"
+    # Clean
+    Subscriber.first.update(created_at: 1.week.ago) # Bob: old and verified, should not be removed
+    alice = Subscriber.last
+    alice.update(verified_at: nil) # not verified but recent, should not be removed (likely to verify)
+    click_on 'Clean unverified subscribers'
+    assert_css ".flashMessage", text: "0 unverified subscribers have been removed successfully"
+    assert_css "td", text: "bob@example.com" # bob is still here
+    assert_css "td", text: "alice@example.com" # alice too
+    # 2 days later alice can be removed
+    alice.update(created_at: 2.days.ago)
+    click_on 'Clean unverified subscribers'
+    assert_css ".flashMessage", text: "1 unverified subscribers have been removed successfully"
+    assert_css "td", text: "bob@example.com" # bob is still here
+    assert_no_css "td", text: "alice@example.com" # alice is gone
+    # Delete (single)
+    click_on "X"
+    assert_css ".flashMessage", text: "bob@example.com has been removed successfully"
+    assert_no_css "td", text: "bob@example.com" # bob is gone
+  end
+
   test "can update settings" do
     login
     click_on 'Settings'

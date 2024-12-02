@@ -1,6 +1,8 @@
 - @active_nav_item = :subscribers
 - content_for :page_header do
-  .pageHeader__button= link_to 'Add a new subscriber', new_admin_subscriber_path, :class => 'button button--small button--green button--solid'
+  .pageHeader__button.buttonSet--onRight
+    = link_to "Clean unverified subscribers", clean_unverified_admin_subscribers_path, class: 'button button--small button--solid', method: :post, data: {confirm: "Are you sure you wish to remove all the unverified users?"}
+    = link_to "Add a new subscriber", new_admin_subscriber_path, class: 'button button--small button--green button--solid'
   %h1.pageHeader__heading.u-margin= @page_title = 'Subscribers'
   %p.u-intro
     This page lists all the people who have subscribed to receive e-mail whenever
@@ -18,13 +20,13 @@
         %td{:width => '20%'}
     %tbody
       - for subscriber in @subscribers
-        %tr
+        %tr{:class => (subscriber.verified? ? '' : 'dataTable--disabled')}
           %td= subscriber.email_address
           %td= time_tag subscriber.created_at
           %td.u-align-right
             - unless subscriber.verified?
-              = link_to "Verify", [:verify, :admin, subscriber], :class => 'button button--small', :method => :post
-            = link_to "X", [:admin, subscriber], :class => 'button button--small', :method => :delete, :data => {:confirm => "Are you sure you wish to remove this subscriber?"}
+              = link_to "Verify", [:verify, :admin, subscriber], :class => 'button button--small button--lightGrey', :method => :post
+            = link_to "X", [:admin, subscriber], :class => 'button button--small button--solid', :method => :delete, :data => {:confirm => "Are you sure you wish to remove this subscriber?"}
 
   = paginate @subscribers
 

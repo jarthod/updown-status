@@ -8,6 +8,11 @@ Any version number which is suffixed by `-dev` means that it is currently
 being developed and is not yet released. It is most likely you'll only ever
 see this in a master branch.
 
+## v1.4.0
+
+* Add invisible_captcha to reduce subscriber spam
+* Add a button to clean all unverified subscribers
+
 ## v1.3.5
 
 * Upgrade underlying Rails version to 7.2

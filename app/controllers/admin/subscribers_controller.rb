@@ -30,6 +30,11 @@ class Admin::SubscribersController < Admin::BaseController
     redirect_to request.referer || admin_subscribers_path, :notice => "#{@subscriber.email_address} has been removed successfully"
   end
 
+  def clean_unverified
+    @count = Subscriber.unverified.where(created_at: ...1.hour.ago).delete_all
+    redirect_to request.referer || admin_subscribers_path, :notice => "#{@count} unverified subscribers have been removed successfully"
+  end
+
   private
 
   def safe_params

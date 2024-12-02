@@ -21,6 +21,7 @@ class Subscriber < ActiveRecord::Base
 
   scope :ordered, -> { order(:id => :desc) }
   scope :verified, -> { where.not(:verified_at => nil) }
+  scope :unverified, -> { where(verified_at: nil) }
 
   florrick do
     string :email_address

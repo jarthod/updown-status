@@ -44,6 +44,7 @@ Rails.application.routes.draw do
     #
     resources :subscribers, :only => [:index, :destroy, :new, :create] do
       post 'verify', :on => :member
+      post 'clean_unverified', :on => :collection
     end
 
     #
