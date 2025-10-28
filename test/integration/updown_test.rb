@@ -306,22 +306,22 @@ class UpdownTest < ActionDispatch::IntegrationTest
 
   class TextRecapTest < self
     test "does nothing if all is good" do
-      assert_includes Updown.text_recap, "Daemon: ✔️ LAN (0m) ✔️ MIA (0m) ✔️ BHS (0m) ✔️ RBX (0m) ✔️ FRA (0m) ✔️ HEL (0m) ✔️ SIN (0m) ✔️ TOK (0m) ✔️ SYD (0m) ✔️ LOCALHOST-TEST (0m)"
-      assert_includes Updown.text_recap, "Sidekiq: ✔️ DB3 (0m) ✔️ RBX (0m) ✔️ LAN (0m) ✔️ MIA (0m) ✔️ BHS (0m) ✔️ FRA (0m) ✔️ HEL (0m) ✔️ SIN (0m) ✔️ TOK (0m) ✔️ SYD (0m) ✔️ LOCALHOST-TEST (0m)"
+      assert_includes Updown.text_recap, "Daemon: ✔️ LAN (0m) ✔️ MIA (0m) ✔️ BHS (0m) ✔️ RBX (0m)  ✔️ FRA (0m) ✔️ CAP (0m) ✔️ HEL (0m) ✔️ SIN (0m) ✔️ TOK (0m) ✔️ SYD (0m) ✔️ LOCALHOST-TEST (0m)"
+      assert_includes Updown.text_recap, "Sidekiq: ✔️ DB3 (0m) ✔️ RBX (0m) ✔️ LAN (0m) ✔️ MIA (0m) ✔️ BHS (0m) ✔️ FRA (0m) ✔️ CAP (0m) ✔️ HEL (0m) ✔️ SIN (0m) ✔️ TOK (0m) ✔️ SYD (0m) ✔️ LOCALHOST-TEST (0m)"
     end
 
     test "show host down if no check in more than 1 hour" do
       Updown.last_checks[HOSTNAME].unshift Time.now - 3601
       Updown.check_status
-      assert_includes Updown.text_recap, "Daemon: ✔️ LAN (0m) ✔️ MIA (0m) ✔️ BHS (0m) ✔️ RBX (0m) ✔️ FRA (0m) ✔️ HEL (0m) ✔️ SIN (0m) ✔️ TOK (0m) ✔️ SYD (0m) ❌ LOCALHOST-TEST (60m)"
-      assert_includes Updown.text_recap, "Sidekiq: ✔️ DB3 (0m) ✔️ RBX (0m) ✔️ LAN (0m) ✔️ MIA (0m) ✔️ BHS (0m) ✔️ FRA (0m) ✔️ HEL (0m) ✔️ SIN (0m) ✔️ TOK (0m) ✔️ SYD (0m) ✔️ LOCALHOST-TEST (0m)"
+      assert_includes Updown.text_recap, "Daemon: ✔️ LAN (0m) ✔️ MIA (0m) ✔️ BHS (0m) ✔️ RBX (0m) ✔️ FRA (0m) ✔️ CAP (0m) ✔️ HEL (0m) ✔️ SIN (0m) ✔️ TOK (0m) ✔️ SYD (0m) ❌ LOCALHOST-TEST (60m)"
+      assert_includes Updown.text_recap, "Sidekiq: ✔️ DB3 (0m) ✔️ RBX (0m) ✔️ LAN (0m) ✔️ MIA (0m) ✔️ BHS (0m) ✔️ FRA (0m) ✔️ CAP (0m) ✔️ HEL (0m) ✔️ SIN (0m) ✔️ TOK (0m) ✔️ SYD (0m) ✔️ LOCALHOST-TEST (0m)"
     end
 
     test "Show sidekiq down if late more than 5 minutes" do
       Updown::WORKERS.each { |ip, hostname| Updown.last_sidekiq_ping[hostname].unshift Time.now - 305 }
       Updown.check_status
-      assert_includes Updown.text_recap, "Daemon: ✔️ LAN (0m) ✔️ MIA (0m) ✔️ BHS (0m) ✔️ RBX (0m) ✔️ FRA (0m) ✔️ HEL (0m) ✔️ SIN (0m) ✔️ TOK (0m) ✔️ SYD (0m) ✔️ LOCALHOST-TEST (0m)"
-      assert_includes Updown.text_recap, "Sidekiq: ❌ DB3 (5m) ❌ RBX (5m) ❌ LAN (5m) ❌ MIA (5m) ❌ BHS (5m) ❌ FRA (5m) ❌ HEL (5m) ❌ SIN (5m) ❌ TOK (5m) ❌ SYD (5m) ❌ LOCALHOST-TEST (5m)"
+      assert_includes Updown.text_recap, "Daemon: ✔️ LAN (0m) ✔️ MIA (0m) ✔️ BHS (0m) ✔️ RBX (0m) ✔️ FRA (0m) ✔️ CAP (0m) ✔️ HEL (0m) ✔️ SIN (0m) ✔️ TOK (0m) ✔️ SYD (0m) ✔️ LOCALHOST-TEST (0m)"
+      assert_includes Updown.text_recap, "Sidekiq: ❌ DB3 (5m) ❌ RBX (5m) ❌ LAN (5m) ❌ MIA (5m) ❌ BHS (5m) ❌ FRA (5m) ❌ CAP (5m) ❌ HEL (5m) ❌ SIN (5m) ❌ TOK (5m) ❌ SYD (5m) ❌ LOCALHOST-TEST (5m)"
     end
   end
 
