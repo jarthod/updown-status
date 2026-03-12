@@ -22,8 +22,10 @@ git push
 
 Database dump
 ```sh
-# Import Render production DB in dev (invert to push DB to prod)
-scp -s srv-cklr2o2v7m0s73al2020@ssh.frankfurt.render.com:/var/data/staytus_prod.sqlite3 db/staytus_dev.sqlite3
+# Import hatchbox production DB in dev
+scp -s deploy@hatch.rootbox.fr:/data/updown-status/db.sqlite3 db/staytus_dev.sqlite3
+# Push local db to production
+scp -s db/staytus_dev.sqlite3 deploy@hatch.rootbox.fr:/data/updown-status/db.sqlite3
 ```
 
 Fake monitoring requests:

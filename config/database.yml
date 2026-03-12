@@ -7,7 +7,7 @@
 
 production:
   adapter: sqlite3
-  database: /var/data/staytus_prod.sqlite3
+  database: /var/data/staytus_prod.sqlite3 # overriden by DATABASE_URL
   timeout: 5000
 
 development:

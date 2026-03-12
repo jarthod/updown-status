@@ -273,7 +273,7 @@ class UpdownTest < ActionDispatch::IntegrationTest
       Updown::WORKERS.each { |ip, hostname| Updown.last_sidekiq_ping[hostname].unshift Time.now - 305 }
       Updown.check_status
       assert_equal 1, Mail::TestMailer.deliveries.length
-      assert_includes Mail::TestMailer.deliveries.first.body.encoded, "RBX sidekiq stopped working 5m ago\r\nLAN sidekiq stopped working 5m ago\r\nMIA"
+      assert_includes Mail::TestMailer.deliveries.first.body.encoded, "RBX sidekiq stopped working 5m ago\nLAN sidekiq stopped working 5m ago\nMIA"
     end
 
     test "updates one service status to major outage if no check in more than 1 hour" do
