@@ -18,19 +18,19 @@
 
 .issueDetail__descriptionTitle {
   font-weight:700;
-  margin-bottom:15px;
+  margin-bottom:10px;
 }
 
 .issueDetail__description {
   line-height:24px;
-  margin-bottom:25px;
+  margin-bottom:15px;
 }
 
 .issueDetail__details {
   line-height:24px;
-  margin-bottom:40px;
-  dt { font-weight:700; margin-bottom:15px; float:left; width:40%;}
-  dd { margin-bottom:15px; }
+  margin-bottom:30px;
+  dt { font-weight:700; margin-bottom:5px; float:left; width:40%;}
+  dd { margin-bottom:5px; }
   dd:last-child { margin-bottom:0; }
 }
 

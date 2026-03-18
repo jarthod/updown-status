@@ -22,8 +22,13 @@
   }
 }
 
-.issueUpdates__text {
-  margin-bottom:5px;
+.issueUpdates__update {
+  p, ul, ol {
+    margin-bottom:5px;
+  }
+  li {
+    margin-left: 25px;
+  }
 }
 
 .issueUpdates__meta {

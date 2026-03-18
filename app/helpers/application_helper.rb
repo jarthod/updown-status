@@ -1,3 +1,5 @@
+require 'redcarpet'
+
 module ApplicationHelper
 
   def distance_of_time_in_words_to_now_with_direction(time)
@@ -38,4 +40,17 @@ module ApplicationHelper
     end
   end
 
+  # https://github.com/vmg/redcarpet
+  MARKDOWN_OPTIONS = {
+    autolink: true,
+    no_intra_emphasis: true,
+    fenced_code_blocks: true,
+    highlight: true,
+    strikethrough: true,
+  }.freeze
+
+  def markdown(text, html: true)
+    markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML, MARKDOWN_OPTIONS)
+    sanitize(markdown.render(text).html_safe)
+  end
 end

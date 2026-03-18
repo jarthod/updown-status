@@ -306,7 +306,7 @@ class UpdownTest < ActionDispatch::IntegrationTest
 
   class TextRecapTest < self
     test "does nothing if all is good" do
-      assert_includes Updown.text_recap, "Daemon: ✔️ LAN (0m) ✔️ MIA (0m) ✔️ BHS (0m) ✔️ RBX (0m)  ✔️ FRA (0m) ✔️ CAP (0m) ✔️ HEL (0m) ✔️ SIN (0m) ✔️ TOK (0m) ✔️ SYD (0m) ✔️ LOCALHOST-TEST (0m)"
+      assert_includes Updown.text_recap, "Daemon: ✔️ LAN (0m) ✔️ MIA (0m) ✔️ BHS (0m) ✔️ RBX (0m) ✔️ FRA (0m) ✔️ CAP (0m) ✔️ HEL (0m) ✔️ SIN (0m) ✔️ TOK (0m) ✔️ SYD (0m) ✔️ LOCALHOST-TEST (0m)"
       assert_includes Updown.text_recap, "Sidekiq: ✔️ DB3 (0m) ✔️ RBX (0m) ✔️ LAN (0m) ✔️ MIA (0m) ✔️ BHS (0m) ✔️ FRA (0m) ✔️ CAP (0m) ✔️ HEL (0m) ✔️ SIN (0m) ✔️ TOK (0m) ✔️ SYD (0m) ✔️ LOCALHOST-TEST (0m)"
     end
 

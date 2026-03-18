@@ -104,3 +104,10 @@ daemon_hel:
   position: 13
   status_id: 1
   group_id: 2
+daemon_cap:
+  id: 14
+  name: Cap Town, South Africa
+  permalink: daemon-cap
+  position: 14
+  status_id: 1
+  group_id: 2

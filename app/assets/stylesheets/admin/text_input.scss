@@ -12,7 +12,8 @@
 }
 
 textarea.textInput {
-  min-height:100px;
+  min-height: 15em;
+  resize: vertical
 }
 
 .textInput:focus {

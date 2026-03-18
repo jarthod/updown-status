@@ -23,7 +23,7 @@ git push
 Database dump
 ```sh
 # Import hatchbox production DB in dev
-scp -s deploy@hatch.rootbox.fr:/data/updown-status/db.sqlite3 db/staytus_dev.sqlite3
+ssh deploy@hatch.rootbox.fr "sqlite3 /data/updown-status/db.sqlite3 '.backup /tmp/staytus.sqlite3'" && scp deploy@hatch.rootbox.fr:/tmp/staytus.sqlite3 db/staytus_dev.sqlite3
 # Push local db to production
 scp -s db/staytus_dev.sqlite3 deploy@hatch.rootbox.fr:/data/updown-status/db.sqlite3
 ```

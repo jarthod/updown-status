@@ -60,9 +60,8 @@
         - for update in @updates
           %li.issueUpdates__item
             %p.issueUpdates__text
-              %b= update.state.humanize
-              &mdash;
-              = update.text
+              - state = "**#{update.state.humanize}** — "
+              = markdown(state + update.text)
             - if update.service_status
               %p.issueUpdates__status
                 Set service status to #{service_status_tag update.service_status}
