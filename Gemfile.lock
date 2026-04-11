@@ -129,6 +129,8 @@ GEM
       activesupport (>= 3)
     css_parser (2.0.0)
       addressable
+    dalli (5.0.2)
+      logger
     date (3.5.1)
     date_validator (0.12.0)
       activemodel (>= 3)
@@ -394,6 +396,7 @@ DEPENDENCIES
   chronic
   chronic_duration
   coffee-rails
+  dalli
   datey
   delayed_job_active_record
   dynamic_form
