@@ -111,3 +111,10 @@ daemon_cap:
   position: 14
   status_id: 1
   group_id: 2
+daemon_tor:
+  id: 15
+  name: Toronto, Canada
+  permalink: daemon-tor
+  position: 15
+  status_id: 1
+  group_id: 2
