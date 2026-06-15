@@ -73,7 +73,7 @@ curl -iH 'X-Forwarded-For: 91.121.222.175' -d 'queues[default]=5000&queues[maile
 ### Custom Monitoring System (`config/initializers/updown.rb`)
 
 **Updown module** maintains in-memory state for monitoring:
-- `DAEMONS`: Hash mapping daemon IPs to location names (lan, mia, bhs, rbx, fra, hel, sin, tok, syd)
+- `DAEMONS`: Hash mapping daemon IPs to location names (lan, mia, tor, rbx, fra, hel, sin, tok, syd)
 - `WORKERS`: Combined hash of web servers and daemons that run Sidekiq
 - `last_checks`: Tracks ping timestamps per daemon (capped at 20)
 - `last_sidekiq_ping`: Tracks Sidekiq health check timestamps (capped at 20)

@@ -55,10 +55,10 @@ daemon_mia:
   position: 6
   status_id: 1
   group_id: 2
-daemon_bhs:
+daemon_tor:
   id: 7
-  name: Montreal, Canada
-  permalink: daemon-bhs
+  name: Toronto, Canada
+  permalink: daemon-tor
   position: 7
   status_id: 1
   group_id: 2
@@ -109,12 +109,5 @@ daemon_cap:
   name: Cap Town, South Africa
   permalink: daemon-cap
   position: 14
-  status_id: 1
-  group_id: 2
-daemon_tor:
-  id: 15
-  name: Toronto, Canada
-  permalink: daemon-tor
-  position: 15
   status_id: 1
   group_id: 2
