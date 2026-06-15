@@ -164,6 +164,22 @@ class AdminTest < ActionDispatch::IntegrationTest
     assert_no_css "td", text: "bob@example.com" # bob is gone
   end
 
+  test "can update service position" do
+    login
+    click_on 'Settings'
+    click_on 'Services'
+    assert_current_path '/admin/services'
+    assert_css 'td', text: '1'
+    click_on 'Web Application'
+    assert_current_path "/admin/services/#{services(:web).id}/edit"
+    fill_in 'Position', with: '99'
+    click_on 'Save Service'
+    assert_css ".flashMessage", text: "Web Application has been updated successfully."
+    assert_equal 99, services(:web).reload.position
+    visit '/admin/services'
+    assert_css 'td', text: '99'
+  end
+
   test "can update settings" do
     login
     click_on 'Settings'

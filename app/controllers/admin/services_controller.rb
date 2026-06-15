@@ -38,7 +38,7 @@ class Admin::ServicesController < Admin::BaseController
   private
 
   def safe_params
-    params.require(:service).permit(:name, :permalink, :description, :status_id, :group_id)
+    params.require(:service).permit(:name, :permalink, :description, :status_id, :group_id, :position)
   end
 
 end

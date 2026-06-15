@@ -6,12 +6,14 @@
 %table.dataTable.u-margin
   %thead
     %tr
+      %td Position
       %td Name
       %td Status
       %td
   %tbody
     - for service in @services
       %tr
+        %td= service.position
         %td= link_to service.name, [:edit, :admin, service], :class => 'u-underline'
         %td= service_status_tag service, :link_maintenance => :admin
         %td.u-align-right= link_to "Edit", [:edit, :admin, service], :class => 'button button--small'
