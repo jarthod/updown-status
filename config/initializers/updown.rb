@@ -37,7 +37,7 @@ module Updown
   WORKERS = WEB.merge(DAEMONS)
   REFRESH_RATE = 60 # sec
 
-  mattr_accessor :last_checks, :status, :sidekiq_status, :last_sidekiq_ping, :disabled_locations
+  mattr_accessor :last_checks, :status, :sidekiq_status, :last_sidekiq_ping, :disabled_locations, :disabled_ipv6_locations
 
   def self.notify title, body
     return if Rails.env.development?
@@ -56,6 +56,7 @@ module Updown
     @@status = Hash.new { |h, k| h[k] = :up }
     @@sidekiq_status = Hash.new { |h, k| h[k] = :up }
     @@disabled_locations = []
+    @@disabled_ipv6_locations = []
   end
 
   def self.attempt_instance_reboot(name)
@@ -219,6 +220,7 @@ module Updown
     @@last_sidekiq_ping[name].unshift Time.now
     @@last_sidekiq_ping[name] = @@last_sidekiq_ping[name][0, 20] if @@last_sidekiq_ping[name].size > 20
     @@disabled_locations = params[:disabled_locations].reject(&:blank?) if params[:disabled_locations]
+    @@disabled_ipv6_locations = params[:disabled_ipv6_locations].reject(&:blank?) if params[:disabled_ipv6_locations]
     healthy = (params[:queues] && params[:queues][:mailers].to_i < 10 && params[:queues][:default].to_i < 5000 && params[:queues][:low].to_i < 10000)
     if healthy && @@sidekiq_status[name] == :down
       @@sidekiq_status[name] = :up
@@ -240,6 +242,8 @@ module Updown
           4 # major-outage
         elsif @@sidekiq_status[name] == :down
           3 # partial-outage
+        elsif @@disabled_ipv6_locations.include?(name)
+          6 # connectivity-issue (IPv6 disabled)
         else
           1 # operational
         end

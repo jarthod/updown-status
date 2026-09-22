@@ -40,3 +40,9 @@ maintenance:
   permalink: maintenance
   color: AAAAAA
   status_type: maintenance
+connectivity-issue:
+  id: 6
+  name: Connectivity Issue
+  permalink: connectivity-issue
+  color: FFBB00
+  status_type: minor

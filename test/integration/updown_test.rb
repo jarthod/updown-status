@@ -76,8 +76,8 @@ class UpdownTest < ActionDispatch::IntegrationTest
       ActiveRecord::Base.establish_connection
     end
 
-    def payload queues: {default: 0, mailers: 0}, disabled_locations: []
-      {env: 'production', queues: queues, disabled_locations: disabled_locations}
+    def payload queues: {default: 0, mailers: 0}, disabled_locations: [], disabled_ipv6_locations: []
+      {env: 'production', queues: queues, disabled_locations: disabled_locations, disabled_ipv6_locations: disabled_ipv6_locations}
     end
 
     test "returns 403 if IP is not allowed" do
@@ -142,6 +142,12 @@ class UpdownTest < ActionDispatch::IntegrationTest
       assert_equal ['rbx'], Updown.disabled_locations
     end
 
+    test "updates the disabled_ipv6_locations list" do
+      assert_equal [], Updown.disabled_ipv6_locations
+      post '/sidekiq', params: payload(disabled_ipv6_locations: ['rbx'])
+      assert_equal ['rbx'], Updown.disabled_ipv6_locations
+    end
+
     test "marks daemon as down if low queue is high" do
       assert_equal 0, Mail::TestMailer.deliveries.length
       post '/sidekiq', params: payload(queues: {default: 5, mailers: 1, low: 10000})
@@ -186,6 +192,30 @@ class UpdownTest < ActionDispatch::IntegrationTest
         post '/sidekiq', params: payload(disabled_locations: ['localhost-test'])
       end
       assert_equal 'operational', services(:daemon_syd).status.permalink
+    end
+
+    test "marks service as connectivity issue if ipv6 disabled" do
+      srv = Service.create!(name: 'local', permalink: 'daemon-localhost-test', status_id: 1)
+      assert_changes -> { srv.reload.status.permalink }, from: 'operational', to: 'connectivity-issue' do
+        post '/sidekiq', params: payload(disabled_ipv6_locations: ['localhost-test'])
+      end
+      assert_equal 'operational', services(:daemon_syd).status.permalink
+    end
+
+    test "does not downgrade to connectivity issue if fully disabled" do
+      srv = Service.create!(name: 'local', permalink: 'daemon-localhost-test', status_id: 1)
+      assert_changes -> { srv.reload.status.permalink }, from: 'operational', to: 'maintenance' do
+        post '/sidekiq', params: payload(disabled_locations: ['localhost-test'], disabled_ipv6_locations: ['localhost-test'])
+      end
+      assert_equal 'operational', services(:daemon_syd).status.permalink
+    end
+
+    test "does not update ipv6-disabled status for service with ongoing issue" do
+      srv = services(:daemon_syd)
+      Issue.create!(services: [srv], title: "ongoing issue", state: 'identified', service_status_id: 3, user: users(:adrien))
+      assert_no_changes -> { srv.reload.status.permalink }, from: 'partial-outage' do
+        post '/sidekiq', params: payload(disabled_ipv6_locations: ['syd'])
+      end
     end
 
     test "does nothing if it stays down" do
