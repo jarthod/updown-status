@@ -21,8 +21,7 @@ module Staytus
         end
 
         # Convert the plain text message into HTML
-        markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
-        content_html = markdown.render(plain_text)
+        content_html = ApplicationHelper.markdown_renderer.render(plain_text)
 
         # Get the HTML template and generate a final HTML message
         template_html = File.read(File.join(Staytus::Config.theme_root, 'views', 'email.html'))

@@ -25,3 +25,12 @@
 .issueUpdates__edit {
   margin-left:8px;
 }
+
+.issueUpdates__text, .issueDetail__description {
+  p, ul, ol {
+    margin-bottom:5px;
+  }
+  li {
+    margin-left: 25px;
+  }
+}

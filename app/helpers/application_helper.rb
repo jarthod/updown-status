@@ -49,8 +49,12 @@ module ApplicationHelper
     strikethrough: true,
   }.freeze
 
-  def markdown(text, html: true)
-    markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML, MARKDOWN_OPTIONS)
-    sanitize(markdown.render(text).html_safe)
+  # Not a shared instance: Redcarpet objects aren't thread-safe
+  def self.markdown_renderer
+    Redcarpet::Markdown.new(Redcarpet::Render::HTML.new(hard_wrap: true), MARKDOWN_OPTIONS)
+  end
+
+  def markdown(text)
+    sanitize(ApplicationHelper.markdown_renderer.render(text).html_safe)
   end
 end
