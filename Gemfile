@@ -41,3 +41,4 @@ gem 'rack-attack'
 gem 'dalli'
 gem 'invisible_captcha'
 gem 'minitest', '~> 5.0' # compatibility issue with Rails 7.2
+gem 'json', '< 3' # json 3 breaks Rails 7.2 (quirks_mode) and faraday 1.x used by vultr (positional options)
