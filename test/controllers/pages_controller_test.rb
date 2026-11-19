@@ -55,4 +55,12 @@ class PagesControllerTest < ActionController::TestCase
     assert_equal "Web", body["services"][2]["group"]
     assert_equal "operational", body["services"][2]["status"]
   end
+
+  test "serves robots.txt" do
+    get :robots
+    assert_response :success
+    assert_equal "text/plain", response.media_type
+    assert_includes response.body, "Disallow: /admin"
+    assert_includes response.body, "Disallow: /subscribe"
+  end
 end

@@ -32,7 +32,7 @@ class PagesController < ApplicationController
     unless site.crawling_permitted?
       text << "Disallow: /"
     end
-    render :text => text.join("\n"), :content_type => 'text/plain'
+    render plain: text.join("\n")
   end
 
   def subscriber_verification
