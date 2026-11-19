@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-gem 'rails', '~> 7.2.0'
+gem 'rails', '~> 8.1.0'
 gem 'sqlite3'
 gem 'sass-rails'
 gem 'uglifier'
@@ -30,7 +30,7 @@ gem 'log_logins'
 
 group :development, :test do
   gem 'listen'
-  gem 'annotate'
+  gem 'annotaterb'
   gem 'webmock'
   gem 'capybara'
 end
