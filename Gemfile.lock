@@ -145,7 +145,6 @@ GEM
       activerecord (>= 3.0, < 9.0)
       delayed_job (>= 3.0, < 5)
     drb (2.2.3)
-    dynamic_form (1.2.0)
     erb (6.0.7)
     erubi (1.13.1)
     execjs (2.10.2)
@@ -399,7 +398,6 @@ DEPENDENCIES
   coffee-rails
   datey
   delayed_job_active_record
-  dynamic_form
   florrick
   foreman
   haml

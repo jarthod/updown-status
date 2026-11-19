@@ -196,4 +196,12 @@ class AdminTest < ActionDispatch::IntegrationTest
     assert_equal false, site.crawling_permitted
     assert_equal "Alaska", site.time_zone
   end
+
+  test "shows validation errors on forms" do
+    login
+    visit '/admin/service_groups/new'
+    click_on 'Save Group'
+    assert_css ".errorExplanation h2", text: "1 error prohibited this service group from being saved"
+    assert_css ".errorExplanation li", text: "Name can't be blank"
+  end
 end

@@ -11,7 +11,6 @@ gem 'nilify_blanks'
 gem 'authie'
 gem 'kaminari'
 gem 'chronic'
-gem 'dynamic_form' # 1.3.x declares ruby < 3.4, so 1.2.0 is used (works fine with rails 8.1)
 gem 'activevalidators'
 gem 'bcrypt', '>= 3.1.12' # 3.1.11 fails on Ubuntu with HashError
 gem 'rails_env_config'
