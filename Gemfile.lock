@@ -413,6 +413,7 @@ DEPENDENCIES
   kaminari
   listen
   log_logins
+  mail
   minitest (~> 5.0)
   moonrope
   nifty-attachments

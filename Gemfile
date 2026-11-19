@@ -25,6 +25,7 @@ gem 'delayed_job_active_record'
 gem 'foreman'
 gem 'redcarpet'
 gem 'premailer'
+gem 'mail' # sent with the mail gem directly (lib/staytus/email.rb), no Action Mailer
 gem 'rack-custom-proxies'
 gem 'log_logins'
 
