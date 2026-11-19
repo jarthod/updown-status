@@ -11,7 +11,7 @@ gem 'nilify_blanks'
 gem 'authie'
 gem 'kaminari'
 gem 'chronic'
-gem 'dynamic_form'
+gem 'dynamic_form' # 1.3.x declares ruby < 3.4, so 1.2.0 is used (works fine with rails 8.1)
 gem 'activevalidators'
 gem 'bcrypt', '>= 3.1.12' # 3.1.11 fails on Ubuntu with HashError
 gem 'rails_env_config'
@@ -38,8 +38,8 @@ end
 
 gem 'sassc'
 gem 'vultr', '~> 1.0' # trigger vultr VM restarts, v2 looks like a big rewrite
+gem 'ostruct' # needed by vultr 1.0, not a default gem anymore since ruby 4.0
 gem 'rack-attack'
-gem 'dalli'
 gem 'invisible_captcha'
 gem 'minitest', '~> 5.0' # compatibility issue with Rails 7.2
-gem 'json', '< 3' # json 3 breaks Rails 7.2 (quirks_mode) and faraday 1.x used by vultr (positional options)
+gem 'json', '< 3' # json 3 breaks faraday 1.x used by vultr (positional options)

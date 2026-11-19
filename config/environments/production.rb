@@ -66,9 +66,9 @@ Rails.application.configure do
   # Prevent health checks from clogging up the logs.
   config.silence_healthcheck_path = "/up"
 
-  # Use memcached as cache store in production.
-  config.cache_store = :mem_cache_store, ENV.fetch("MEMCACHE_SERVERS", "localhost:11211"),
-                       { namespace: "updown-status", pool: false }
+  # In-process cache: only used by Rack::Attack counters, and we run a single puma process.
+  # (no memcached/Dalli = no Marshal deserialization of data read from the network)
+  config.cache_store = :memory_store
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).
